@@ -12,17 +12,20 @@
       </div>
     </a>
 
-    <ul class="nav-links" id="navLinks" role="list">
+    <div class="nav-links-wrapper">
+      <ul class="nav-links" id="navLinks" role="list">
+        <li><a href="{% url 'home' %}" class="nav-link" data-nav="home">Home</a></li>
+        <li><a href="{% url 'projects' %}" class="nav-link" data-nav="projects">Projects</a></li>
+        <li><a href="{% url 'dashboards' %}" class="nav-link" data-nav="dashboards">Dashboards</a></li>
+        <li><a href="{% url 'research' %}" class="nav-link" data-nav="research">Research</a></li>
+        <li><a href="{% url 'activity_list' %}" class="nav-link" data-nav="activity_list">Recent</a></li>
+        <li><a href="{% url 'certificate_list' %}" class="nav-link" data-nav="certificate_list">Certificates</a></li>
+        <li><a href="{% url 'cv_view' %}" class="nav-link" data-nav="cv_view">Resume</a></li>
+        <li><a href="{% url 'contact' %}" class="nav-link" data-nav="contact">Contact</a></li>
+      </ul>
+
       <span class="nav-links-indicator" id="navIndicator" aria-hidden="true"></span>
-      <li><a href="{% url 'home' %}"          class="nav-link" data-nav="home">Home</a></li>
-      <li><a href="{% url 'projects' %}"      class="nav-link" data-nav="projects">Projects</a></li>
-      <li><a href="{% url 'dashboards' %}"    class="nav-link" data-nav="dashboards">Dashboards</a></li>
-      <li><a href="{% url 'research' %}"      class="nav-link" data-nav="research">Research</a></li>
-      <li><a href="{% url 'activity_list' %}" class="nav-link" data-nav="activity_list">Recent</a></li>
-      <li><a href="{% url 'certificate_list' %}" class="nav-link" data-nav="certificate_list">Certificates</a></li>
-      <li><a href="{% url 'cv_view' %}"       class="nav-link" data-nav="cv_view">Resume</a></li>
-      <li><a href="{% url 'contact' %}"       class="nav-link" data-nav="contact">Contact</a></li>
-    </ul>
+    </div>
 
     <div class="nav-actions">
       {% if request.user.is_staff %}
@@ -83,7 +86,7 @@
         <svg class="lm-icon lm-icon--nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         Toggle theme
       </button>
-      
+
       {% if site_profile.active_cv %}
       <a href="{{ site_profile.active_cv.file.url }}" download data-track-url="{% url 'cv_track' %}" data-download-label="Resume" class="btn btn-primary" style="width:100%;justify-content:center;">
         <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>

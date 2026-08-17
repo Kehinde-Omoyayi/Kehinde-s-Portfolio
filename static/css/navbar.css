@@ -37,7 +37,7 @@
   }
 
   /* Padding offset for fixed navbar applied to body via global CSS later */
-  
+
   .nav-container {
     max-width: var(--wide);
     margin: 0 auto;
@@ -64,18 +64,6 @@
   .nav-brand .brand-sub { font-size: 0.74rem; color: var(--text-muted); }
 
   /* ── Desktop Links ─────────────────────────────────────────────── */
-  .nav-links {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    gap: 0.15rem;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    flex: 1;
-    justify-content: center;
-    min-width: 0;
-  }
   .nav-links li { position: relative; }
   .nav-link {
     display: inline-block;
@@ -91,16 +79,45 @@
   .nav-link:hover { color: var(--text); background: color-mix(in srgb, var(--text) 8%, transparent); }
   .nav-link.active { color: var(--text); font-weight: 600; }
 
-  .nav-links-indicator {
-    position: absolute;
-    bottom: -6px; /* Moved down to align with the bottom of the container or list */
-    height: 3px;
-    border-radius: 3px 3px 0 0;
-    background: var(--brand-blue);
-    transition: transform .28s var(--ease-liquid), width .28s var(--ease-liquid), opacity .2s ease;
-    opacity: 0;
-  }
-  .nav-links-indicator.active { opacity: 1; }
+.nav-links-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.nav-links-indicator {
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--brand-blue);
+  opacity: 0;
+  pointer-events: none;
+
+  transition:
+    left 0.28s var(--ease-liquid),
+    width 0.28s var(--ease-liquid),
+    opacity 0.2s ease;
+}
+
+.nav-links-indicator.active {
+  opacity: 1;
+}
 
   /* ── Actions ───────────────────────────────────────────────────── */
   .nav-actions { display: flex; align-items: center; gap: 0.25rem; flex-shrink: 0; }

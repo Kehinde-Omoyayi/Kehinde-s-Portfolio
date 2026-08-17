@@ -14,44 +14,44 @@
       return;
     }
 
-    const navRect = navLinks.getBoundingClientRect();
     const linkRect = link.getBoundingClientRect();
+    const wrapperRect = indicator.parentElement.getBoundingClientRect();
 
-    const left = linkRect.left - navRect.left;
+    const left = linkRect.left - wrapperRect.left;
 
+    indicator.style.left = `${left}px`;
     indicator.style.width = `${linkRect.width}px`;
-    indicator.style.transform = `translateX(${left}px)`;
     indicator.classList.add("active");
   }
 
-  function updateActiveIndicator() {
-    const activeLink =
+  function getActiveLink() {
+    return (
       navLinks.querySelector(".nav-link.active") ||
-      navLinks.querySelector(".nav-link[aria-current='page']");
-
-    moveIndicator(activeLink);
+      navLinks.querySelector(".nav-link[aria-current='page']")
+    );
   }
 
-  links.forEach(link => {
-    link.addEventListener("mouseenter", () => {
-      moveIndicator(link);
+  function updateIndicator() {
+    moveIndicator(getActiveLink());
+  }
+
+  links.forEach(function (link) {
+    link.addEventListener("mouseenter", function () {
+      moveIndicator(this);
     });
   });
 
-  navLinks.addEventListener("mouseleave", updateActiveIndicator);
+  navLinks.addEventListener("mouseleave", function () {
+    updateIndicator();
+  });
 
-  window.addEventListener("resize", updateActiveIndicator);
+  window.addEventListener("resize", updateIndicator);
 
-  // Wait for fonts to finish loading before calculating positions.
-  // This is important because Chrome can calculate text widths
-  // differently before the web font has finished loading.
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(updateActiveIndicator);
-  } else {
-    updateActiveIndicator();
+    document.fonts.ready.then(updateIndicator);
   }
 
-  window.addEventListener("load", updateActiveIndicator);
+  window.addEventListener("load", updateIndicator);
 
-  updateActiveIndicator();
+  updateIndicator();
 })();
