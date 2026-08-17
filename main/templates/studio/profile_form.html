@@ -1,0 +1,25 @@
+{% extends "studio/base.html" %}
+{% block page_title %}Site Profile{% endblock %}
+{% block content %}
+
+<div class="max-w-2xl">
+  <p class="text-sm text-gray-500 mb-4">This controls your homepage hero section, bio, availability and stats.</p>
+
+  <form method="post" enctype="multipart/form-data" class="rounded-xl border border-white/10 bg-white/5 p-6">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="rounded-lg border border-red-500/40 bg-red-500/10 text-red-200 text-sm px-4 py-2 mb-4">{{ form.non_field_errors.0 }}</div>
+    {% endif %}
+
+    {% for field in form %}
+      {% include "studio/_field.html" %}
+    {% endfor %}
+
+    {% include "studio/_inline_formset.html" with formset=formset formset_id="highlights" title="Currently Focused On (bullet list)" %}
+
+    <div class="flex gap-3 pt-6">
+      <button type="submit" class="bg-accent hover:bg-indigo-500 text-white text-sm px-5 py-2.5 rounded-lg">Save</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

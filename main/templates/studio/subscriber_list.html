@@ -1,0 +1,38 @@
+{% extends "studio/base.html" %}
+{% block page_title %}Subscribers{% endblock %}
+{% block content %}
+<p class="text-sm text-gray-500 mb-5">People who signed up on your site to receive updates. Campaigns are only sent to Active subscribers.</p>
+
+<div class="rounded-xl border border-white/10 overflow-hidden">
+  <table class="w-full text-sm">
+    <thead class="bg-white/5 text-gray-400 text-left">
+      <tr>
+        <th class="px-4 py-3 font-medium">Email</th>
+        <th class="px-4 py-3 font-medium">Status</th>
+        <th class="px-4 py-3 font-medium">Subscribed</th>
+        <th class="px-4 py-3 font-medium text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-white/5">
+      {% for subscriber in subscribers %}
+        <tr class="hover:bg-white/5">
+          <td class="px-4 py-3 text-gray-200">{{ subscriber.email }}</td>
+          <td class="px-4 py-3">
+            {% if subscriber.is_active %}<span class="pill">Active</span>{% else %}<span class="text-gray-500">Unsubscribed</span>{% endif %}
+          </td>
+          <td class="px-4 py-3 text-gray-500">{{ subscriber.subscribed_at|date:"M j, Y" }}</td>
+          <td class="px-4 py-3 text-right whitespace-nowrap">
+            <form action="{% url 'studio:subscriber_toggle' subscriber.pk %}" method="post" class="inline">
+              {% csrf_token %}
+              <button type="submit" class="text-accent text-xs mr-3">{% if subscriber.is_active %}Deactivate{% else %}Reactivate{% endif %}</button>
+            </form>
+            <a href="{% url 'studio:subscriber_delete' subscriber.pk %}" class="text-red-400 text-xs">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="px-4 py-8 text-center text-gray-500">No subscribers yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

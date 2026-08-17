@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}About — {{ site_profile.full_name|default:"Kehinde Omoyayi" }}{% endblock %}
+
+{% block content %}
+
+<!-- ============ HERO ============ -->
+
+<section class="section" id="about-hero">
+  <div class="wide-container" style="max-width:1000px;">
+    <div class="section-header" data-motion="fade-up" data-motion-delay="0s">
+      <div class="section-eyebrow" style="color:var(--cat-about, var(--accent-gold));">About</div>
+      <h1 class="section-title">The Person Behind the Data</h1>
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start; margin-top:32px;">
+      <div style="flex:0 0 220px;" data-motion="fade-up" data-motion-delay="0.1s">
+        {% if site_profile.profile_picture %}
+          <img src="{{ site_profile.profile_picture.url }}"
+               alt="{{ site_profile.full_name }}"
+               style="width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:20px; border:1px solid rgba(255,255,255,0.08);">
+        {% endif %}
+        <div class="glass-card" style="margin-top:16px; padding:14px 18px; text-align:center;">
+          <span class="badge-dot" style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#2ecc71; margin-right:6px;"></span>
+          <span class="text-muted" style="font-size:0.9rem;">{{ site_profile.availability_status }}</span>
+        </div>
+      </div>
+
+      <div style="flex:1; min-width:300px;" data-motion="fade-up" data-motion-delay="0.2s">
+        <h2 style="font-size:1.6rem; font-weight:600; margin-bottom:12px;">{{ site_profile.headline }}</h2>
+        <p class="text-muted" style="font-size:1.05rem; line-height:1.75; margin-bottom:20px;">
+        <i> {{ site_profile.note }} </i> {{ site_profile.short_bio }}
+        </p>
+
+        <div class="hero-links" data-motion="fade-up" data-motion-delay="0.45s" style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:22px;">
+          {% for link in connect_links %}
+            <a href="{{ link.href }}" class="btn btn-outline magnetic" style="min-width:130px; justify-content:center;">
+              {{ link.label|default:link.get_platform_display }}
+            </a>
+          {% endfor %}
+        </div>
+        
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <span class="btn btn-outline" style="pointer-events:none;">📍 {{ site_profile.location }}</span>
+          <span class="btn btn-outline" style="pointer-events:none;">🎓 {{ site_profile.education }}</span>
+          <span class="btn btn-outline" style="pointer-events:none;">⏱ {{ site_profile.experience_years }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE CASE FOR ME ============ -->
+<section class="section" id="about-case">
+  <div class="wide-container" style="max-width:1000px;">
+    <div class="section-header" data-motion="fade-up" data-motion-delay="0s">
+      <div class="section-eyebrow">The Case For Me</div>
+      <h2 class="section-title">What Happens When I'm On Your Team</h2>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px;">
+      {% for outcome in signature_outcomes %}
+        <div class="glass-card outcome-card" data-motion="fade-up" data-motion-delay="{{ forloop.counter0|add:1 }}00ms"
+             style="padding:28px; border-left:2px solid var(--accent-gold);">
+          <div style="font-size:1.9rem; font-weight:700; color:var(--accent-gold); margin-bottom:6px;">{{ outcome.stat }}</div>
+          <h3 style="font-size:1.02rem; font-weight:600; margin-bottom:8px;">{{ outcome.title }}</h3>
+          <p class="text-muted" style="font-size:0.92rem; line-height:1.6;">{{ outcome.detail }}</p>
+        </div>
+      {% empty %}
+        <p class="empty-state">Add Signature Outcomes via the Studio to populate this section.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============ NARRATIVE ============ -->
+<section class="section" id="about-narrative">
+  <div class="wide-container" style="max-width:1000px;">
+    <div class="section-header" data-motion="fade-up" data-motion-delay="0s">
+      <div class="section-eyebrow">My Story</div>
+      <h2 class="section-title">How I Got Here</h2>
+    </div>
+    <div class="prose text-muted" data-motion="fade-up" data-motion-delay="0.1s" style="font-size:1.08rem; line-height:1.95;">
+      {{ site_profile.story|linebreaks }}
+    </div>
+  </div>
+</section>
+
+<!-- ============ BY THE NUMBERS ============ -->
+<section class="section" id="about-stats">
+  <div class="wide-container" style="max-width:1000px;">
+    <div class="section-header" data-motion="fade-up" data-motion-delay="0s">
+      <div class="section-eyebrow">Impact</div>
+      <h2 class="section-title">By The Numbers</h2>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:24px;" data-motion="fade-up" data-motion-delay="0.1s">
+      {% for stat in about_stats %}
+        <div class="glass-card stat-card" style="padding:28px 20px; text-align:center;">
+          <div class="stat-number" data-count="{{ stat.value }}" data-suffix="{{ stat.suffix }}">{{stat.value}} {{stat.suffix}}</div>
+          <div class="text-muted" style="font-size:0.9rem; margin-top:6px;">{{ stat.label }}</div>
+        </div>
+      {% empty %}
+        <p class="empty-state">Add impact stats via the Studio.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW I WORK ============ -->
+<section class="section" id="about-pillars">
+  <div class="wide-container" style="max-width:1000px;">
+    <div class="section-header" data-motion="fade-up" data-motion-delay="0s">
+      <div class="section-eyebrow">Approach</div>
+      <h2 class="section-title">How I Work</h2>
+    </div>
+    <div style="display:flex; flex-direction:column;">
+      {% for pillar in about_pillars %}
+        <div class="pillar-row" data-motion="fade-up" data-motion-delay="{{ forloop.counter0|add:1 }}00ms"
+             style="display:flex; gap:28px; padding:28px 0; border-bottom:1px solid rgba(255,255,255,0.07);">
+          <div style="font-size:2.2rem; font-weight:700; color:var(--accent-gold); min-width:60px;">{{ forloop.counter|stringformat:"02d" }}</div>
+          <div>
+            <h3 style="font-size:1.15rem; font-weight:600; margin-bottom:6px;">{{ pillar.title }}</h3>
+            <p class="text-muted" style="line-height:1.7;">{{ pillar.description }}</p>
+          </div>
+        </div>
+      {% empty %}
+        <p class="empty-state">Add "How I Work" pillars via the Studio.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============ CERTIFICATIONS ============ -->
+<section class="section" id="about-certifications">
+  <div class="wide-container" style="max-width:1000px;">
+    <div class="section-header" data-motion="fade-up" data-motion-delay="0s">
+      <div class="section-eyebrow">Credentials</div>
+      <h2 class="section-title">Certifications & Education</h2>
+    </div>
+
+    <div class="cert-grid" data-motion="fade-up" data-motion-delay="0.1s">
+      {% for cert in certificates %}
+        <a href="{{ cert.credential_url }}" class="cert-card">
+          <div class="cert-medallion">
+            {% if cert.image %}
+              <img src="{{ cert.image.url }}" alt="{{ cert.issuing_organization }}">
+            {% else %}
+              <span>{{ cert.issuing_organization|first|upper }}</span>
+            {% endif %}
+          </div>
+          <h4 class="cert-title">{{ cert.title }}</h4>
+          <p class="cert-meta">{{ cert.issuing_organization }} · {{ cert.date_issued|date:"M Y" }}</p>
+        </a>
+      {% empty %}
+        <p class="empty-state">Add certificates via the Studio.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cert-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:32px 22px;
+  }
+
+  .cert-card{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    text-decoration:none;
+    padding:36px 20px 22px;
+    border-radius:32px 12px 32px 12px;
+    background:rgba(255,255,255,0.035);
+    border:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+    transition: transform 0.4s cubic-bezier(.2,.8,.2,1), box-shadow 0.4s ease, border-color 0.4s ease;
+  }
+
+  .cert-card:hover{
+    transform: translateY(-8px) rotate(-0.6deg);
+    border-color: rgba(212,175,55,0.4);
+    box-shadow: 0 24px 48px -22px rgba(179,140,255,0.4), 0 10px 24px -12px rgba(0,0,0,0.45);
+  }
+
+  .cert-medallion{
+    position:absolute;
+    top:-28px;
+    left:50%;
+    transform:translateX(-50%);
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    padding:3px;
+    background:linear-gradient(135deg, var(--accent-gold), #b899ff);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 8px 20px -6px rgba(0,0,0,0.5);
+    transition: transform 0.4s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .cert-card:hover .cert-medallion{
+    transform:translateX(-50%) scale(1.08) rotate(8deg);
+  }
+
+  .cert-medallion img,
+  .cert-medallion span{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    object-fit:contain;
+    background:#0f0f14;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    color:#0a0a0a;
+  }
+
+  .cert-medallion span{
+    background:linear-gradient(135deg, var(--accent-gold), #b899ff);
+  }
+
+  .cert-title{
+    font-size:1rem;
+    font-weight:600;
+    margin:20px 0 6px;
+    line-height:1.35;
+  }
+
+  .cert-meta{
+    font-size:0.85rem;
+    color:var(--text-muted, #9a9aa5);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cert-card, .cert-medallion{ transition:none; }
+    .cert-card:hover{ transform:none; }
+    .cert-card:hover .cert-medallion{ transform:translateX(-50%); }
+  }
+</style>
+
+<!-- ============ CLOSING CTA ============ -->
+<section class="section" id="about-cta">
+  <div class="wide-container" style="max-width:700px; text-align:center;">
+    <div data-motion="fade-up" data-motion-delay="0s">
+      <h2 class="section-title" style="margin-bottom:14px;">If This Sounds Like What You Need</h2>
+      <p class="text-muted" style="margin-bottom:24px;">I'm not looking to send you a report. I'm looking for the next decision to influence.</p>
+        {% for link in social_links %}
+          {% if link.platform == 'whatsapp' %}
+          <a href="{{ link.href }}" class="btn btn-primary cta-btn" style="position:relative;z-index:1;margin-bottom:20px;">
+            Get in Touch
+            <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          {% endif %}
+        {% endfor %}
+      <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:14px;">
+        {% if site_profile.active_cv %}
+        <a href="{{ site_profile.active_cv.file.url }}" target="_blank" rel="noopener" class="btn btn-outline">
+          <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          View Resume
+        </a>
+        <a href="{{ site_profile.active_cv.file.url }}" download data-track-url="{% url 'cv_track' %}" data-download-label="Resume" class="btn btn-outline">
+          <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Resume
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAGE-SPECIFIC STYLING ============
+     Scroll reveal, magnetic hover and stagger delay are handled site-wide
+     by MotionController + liquid-motion.css now — this page no longer
+     needs its own copy of any of that. What's left here is genuinely
+     specific to this page: the gold/violet text treatment and the
+     hover lift+glow on this page's card types. -->
+<style>
+  .text-gradient{
+    background: linear-gradient(90deg, var(--accent-gold), #b899ff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  /* Hover: real lift + glow, not just a color change */
+  .outcome-card, .pillar-row, .stat-card, .cert-card{
+    transition: transform 0.35s cubic-bezier(.2,.8,.2,1), box-shadow 0.35s ease, border-color 0.35s ease;
+  }
+  .outcome-card:hover, .cert-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px -20px rgba(179,140,255,0.35), 0 8px 20px -10px rgba(0,0,0,0.4);
+  }
+  .stat-card:hover{ transform: scale(1.04); box-shadow: 0 16px 32px -18px rgba(212,175,55,0.4); }
+  .pillar-row:hover{ padding-left:8px; border-color: var(--accent-gold); }
+
+  @media (prefers-reduced-motion: reduce){
+    .outcome-card:hover, .cert-card:hover, .stat-card:hover, .pillar-row:hover{ transform:none; }
+  }
+</style>
+{% endblock %}

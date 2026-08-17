@@ -1,0 +1,148 @@
+{% extends "studio/base.html" %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+
+<!-- ── Reset Analytics modal trigger ─────────────────────────────── -->
+<div id="resetAnalyticsModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 p-4">
+  <div class="w-full max-w-sm rounded-xl border border-white/10 bg-[#0d1220] p-5">
+    <h3 class="text-white font-semibold mb-1">Reset analytics figures</h3>
+    <p class="text-xs text-gray-400 mb-4">This permanently clears the logs behind these numbers. It can't be undone.</p>
+    <form method="post" action="{% url 'studio:reset_analytics' %}">
+      {% csrf_token %}
+      <label class="block text-xs text-gray-400 mb-1">What should be reset?</label>
+      <select name="scope" class="w-full mb-4 rounded-lg bg-[#0f1420] border border-white/15 text-gray-100 px-3 py-2 text-sm focus:outline-none focus:border-accent">
+        <option value="all">Downloads &amp; page views (everything)</option>
+        <option value="downloads">Downloads only</option>
+        <option value="views">Page views only</option>
+      </select>
+      <div class="flex gap-3 justify-end">
+        <button type="button" onclick="document.getElementById('resetAnalyticsModal').classList.add('hidden'); document.getElementById('resetAnalyticsModal').classList.remove('flex');" class="border border-white/20 hover:border-white/40 text-sm px-4 py-2 rounded-lg text-gray-300">Cancel</button>
+        <button type="submit" class="bg-red-600 hover:bg-red-500 text-white text-sm px-4 py-2 rounded-lg">Reset</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  function openResetAnalyticsModal() {
+    const modal = document.getElementById('resetAnalyticsModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+</script>
+
+<!-- ── Content Stats ──────────────────────────────────────────── -->
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+  {% for label, value in stats.items %}
+    <div class="rounded-xl border border-white/10 bg-white/5 p-4 hover:bg-white/10 transition">
+      <p class="text-2xl font-bold text-white">{{ value }}</p>
+      <p class="text-xs text-gray-400 mt-1">{{ label }}</p>
+    </div>
+  {% endfor %}
+</div>
+
+<!-- ── Analytics Row ─────────────────────────────────────────── -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+
+  <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-5">
+    <p class="text-xs text-emerald-400 uppercase tracking-wide mb-1">CV Downloads</p>
+    <p class="text-3xl font-bold text-white">{{ cv_downloads_total }}</p>
+    <p class="text-xs text-gray-500 mt-1">all time</p>
+  </div>
+
+  <div class="rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-5">
+    <p class="text-xs text-indigo-400 uppercase tracking-wide mb-1">Project PDF Downloads</p>
+    <p class="text-3xl font-bold text-white">{{ project_downloads_total }}</p>
+    <p class="text-xs text-gray-500 mt-1">all time</p>
+  </div>
+
+  <div class="rounded-xl border border-amber-500/30 bg-amber-500/10 p-5">
+    <p class="text-xs text-amber-400 uppercase tracking-wide mb-1">Page Views</p>
+    <p class="text-3xl font-bold text-white">{{ total_page_views }}</p>
+    <p class="text-xs text-gray-500 mt-1">all time</p>
+  </div>
+
+</div>
+
+<!-- ── Details Row ───────────────────────────────────────────── -->
+<div class="grid md:grid-cols-2 gap-6 mb-8">
+
+  <!-- Top Pages -->
+  <div class="rounded-xl border border-white/10 bg-white/5 p-5">
+    <h2 class="text-white font-semibold mb-3">📊 Top Pages</h2>
+    {% if top_pages %}
+      <ul class="space-y-2 text-sm">
+        {% for page in top_pages %}
+          <li class="flex justify-between">
+            <span class="text-gray-300 truncate max-w-[200px]">{{ page.path }}</span>
+            <span class="text-indigo-400 font-semibold">{{ page.views }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-500 text-sm">No page views recorded yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Top Project Downloads -->
+  <div class="rounded-xl border border-white/10 bg-white/5 p-5">
+    <h2 class="text-white font-semibold mb-3">📥 Top Project Downloads</h2>
+    {% if project_download_counts %}
+      <ul class="space-y-2 text-sm">
+        {% for item in project_download_counts %}
+          <li class="flex justify-between">
+            <span class="text-gray-300 truncate max-w-[200px]">{{ item.object_title }}</span>
+            <span class="text-emerald-400 font-semibold">{{ item.count }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-500 text-sm">No project downloads yet.</p>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- ── Quick Actions + Recent Downloads ─────────────────────── -->
+<div class="grid md:grid-cols-2 gap-6">
+
+  <div class="rounded-xl border border-white/10 bg-white/5 p-5">
+    <h2 class="text-white font-semibold mb-3">⚡ Quick Actions</h2>
+    <div class="grid grid-cols-2 gap-2 text-sm">
+      <button type="button" onclick="openResetAnalyticsModal()" class="rounded-lg border border-red-500/30 text-red-300 hover:border-red-400 hover:bg-red-500/10 px-3 py-2 transition text-left col-span-2">↺ Reset Analytics (downloads/views)</button>
+      <a href="{% url 'studio:project_create' %}" class="rounded-lg border border-white/10 hover:border-accent px-3 py-2 hover:bg-white/5 transition">+ New Project</a>
+      <a href="{% url 'studio:dashboard_create' %}" class="rounded-lg border border-white/10 hover:border-accent px-3 py-2 hover:bg-white/5 transition">+ New Dashboard</a>
+      <a href="{% url 'studio:generic_create' 'certificates' %}" class="rounded-lg border border-white/10 hover:border-accent px-3 py-2 hover:bg-white/5 transition">+ New Certificate</a>
+      <a href="{% url 'studio:generic_create' 'recommendations' %}" class="rounded-lg border border-white/10 hover:border-accent px-3 py-2 hover:bg-white/5 transition">+ New Recommendation</a>
+      <a href="{% url 'studio:generic_create' 'research' %}" class="rounded-lg border border-white/10 hover:border-accent px-3 py-2 hover:bg-white/5 transition">+ New Publication</a>
+      <a href="{% url 'studio:generic_create' 'open-roles' %}" class="rounded-lg border border-white/10 hover:border-accent px-3 py-2 hover:bg-white/5 transition">+ Open Role</a>
+      <a href="{% url 'studio:generic_create' 'signature-outcomes' %}" class="rounded-lg border border-white/10 hover:border-accent px-3 py-2 hover:bg-white/5 transition">+ Outcome</a>
+      <a href="{% url 'studio:campaign_create' %}" class="rounded-lg border border-white/10 hover:border-accent px-3 py-2 hover:bg-white/5 transition">+ Campaign</a>
+      <a href="{% url 'studio:profile_edit' %}" class="rounded-lg border border-white/10 hover:border-accent px-3 py-2 hover:bg-white/5 transition col-span-2">✏️ Edit Site Profile</a>
+    </div>
+  </div>
+
+  <!-- Recent Downloads log -->
+  <div class="rounded-xl border border-white/10 bg-white/5 p-5">
+    <h2 class="text-white font-semibold mb-3">📋 Recent Downloads</h2>
+    {% if recent_downloads %}
+      <ul class="space-y-2 text-xs">
+        {% for dl in recent_downloads %}
+          <li class="flex justify-between text-gray-400">
+            <span class="truncate max-w-[180px]">
+              <span class="{% if dl.file_type == 'cv' %}text-emerald-400{% else %}text-indigo-400{% endif %}">
+                {{ dl.get_file_type_display }}
+              </span>
+              — {{ dl.object_title|truncatechars:40 }}
+            </span>
+            <span class="text-gray-600 ml-2 shrink-0">{{ dl.downloaded_at|timesince }} ago</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-500 text-sm">No downloads recorded yet.</p>
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock %}

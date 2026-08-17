@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Research — {{ site_profile.full_name|default:"Kehinde Omoyayi" }}{% endblock %}
+{% block content %}
+
+<section class="section" id="research-page">
+  <div class="wide-container">
+    <div class="section-header" data-motion="fade-up" style="text-align: left; margin-bottom: 24px;">
+      <div>
+        <div class="section-eyebrow" style="color:var(--cat-research);">Academic</div>
+        <h1 class="section-title">Research Publications</h1>
+      </div>
+    </div>
+
+    <div class="research-grid" id="researchGrid">
+      {% for publication in page_obj %}
+      <article class="research-card" data-motion="reveal-liquid" data-motion-delay="0.{{ forloop.counter0 }}s">
+        <div class="research-thumb" style="border-color:color-mix(in srgb,var(--cat-research) 30%,transparent)">
+          {% if publication.cover_image %}
+          <img src="{{ publication.cover_image.url }}" alt="{{ publication.title }}" loading="lazy" />
+          {% endif %}
+        </div>
+        <div class="research-body">
+          <div class="research-title">{{ publication.title }}</div>
+          <p style="color:var(--text-muted); font-size:0.85rem; margin-top:-4px; margin-bottom:4px;">{{ publication.authors }}</p>
+          <div class="research-desc">{{ publication.abstract|truncatechars:150 }}</div>
+          <div class="research-footer">
+            <span class="research-year">{{ publication.publication_year }}</span>
+            <a href="{{ publication.get_absolute_url }}" class="research-read">
+              <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              View details
+            </a>
+          </div>
+        </div>
+      </article>
+      {% empty %}
+        <p class="empty-state">No publications yet.</p>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}

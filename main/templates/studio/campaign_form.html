@@ -1,0 +1,19 @@
+{% extends "studio/base.html" %}
+{% block page_title %}New Campaign{% endblock %}
+{% block content %}
+<div class="max-w-2xl">
+  <a href="{% url 'studio:campaign_list' %}" class="text-sm text-accent">&larr; Back to Campaigns</a>
+
+  <form method="post" class="mt-4 rounded-xl border border-white/10 bg-white/5 p-6">
+    {% csrf_token %}
+    {% for field in form %}
+      {% include "studio/_field.html" %}
+    {% endfor %}
+    <p class="text-xs text-gray-500 -mt-2 mb-4">Saves as a draft — you'll send it from the Campaigns list.</p>
+    <div class="flex gap-3">
+      <button type="submit" class="bg-accent hover:bg-indigo-500 text-white text-sm px-5 py-2.5 rounded-lg">Save draft</button>
+      <a href="{% url 'studio:campaign_list' %}" class="border border-white/20 hover:border-white/40 text-sm px-5 py-2.5 rounded-lg">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

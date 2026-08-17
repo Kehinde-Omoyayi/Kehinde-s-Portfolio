@@ -1,0 +1,42 @@
+{% extends "studio/base.html" %}
+{% block page_title %}Projects{% endblock %}
+{% block content %}
+
+<div class="flex items-center justify-between mb-5">
+  <p class="text-sm text-gray-500">{{ projects|length }} project(s)</p>
+  <a href="{% url 'studio:project_create' %}" class="bg-accent hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg">💼 Add Project</a>
+</div>
+
+<div class="rounded-xl border border-white/10 overflow-hidden">
+  <table class="w-full text-sm">
+    <thead class="bg-white/5 text-gray-400 text-left">
+      <tr>
+        <th class="px-4 py-3 font-medium">Name</th>
+        <th class="px-4 py-3 font-medium">Status</th>
+        <th class="px-4 py-3 font-medium">Featured</th>
+        <th class="px-4 py-3 font-medium">View button live?</th>
+        <th class="px-4 py-3 font-medium">Links</th>
+        <th class="px-4 py-3 font-medium text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-white/5">
+      {% for project in projects %}
+        <tr class="hover:bg-white/5">
+          <td class="px-4 py-3 text-gray-200">{{ project.name }}</td>
+          <td class="px-4 py-3 text-gray-400">{{ project.get_status_display }}</td>
+          <td class="px-4 py-3">{% if project.is_featured %}✅{% else %}—{% endif %}</td>
+          <td class="px-4 py-3">{% if project.is_view_visible %}✅{% else %}—{% endif %}</td>
+          <td class="px-4 py-3 text-gray-400">{{ project.links.count }}/3</td>
+          <td class="px-4 py-3 text-right whitespace-nowrap">
+            <a href="{{ project.get_absolute_url }}" target="_blank" class="text-gray-400 text-xs mr-3">View</a>
+            <a href="{% url 'studio:project_update' project.pk %}" class="text-accent text-xs mr-3">Edit</a>
+            <a href="{% url 'studio:project_delete' project.pk %}" class="text-red-400 text-xs">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="px-4 py-8 text-center text-gray-500">No projects yet — click "Add Project" to create the first one.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "studio/_auth_base.html" %}
+{% block title %}Log in{% endblock %}
+{% block heading %}Sign in to Studio{% endblock %}
+{% block subheading %}Your site's control panel{% endblock %}
+{% block content %}
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">{{ form.username.label }}</label>
+      {{ form.username }}
+    </div>
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">Password</label>
+      {{ form.password }}
+    </div>
+    <button type="submit" class="w-full bg-accent hover:bg-indigo-500 text-white text-sm px-4 py-2.5 rounded-lg">Sign in</button>
+  </form>
+  <p class="text-center mt-4">
+    <a href="{% url 'studio:password_reset_request' %}" class="text-xs text-gray-500 hover:text-accent">Forgot your password?</a>
+  </p>
+{% endblock %}

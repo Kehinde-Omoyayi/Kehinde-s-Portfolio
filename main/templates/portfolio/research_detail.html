@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ publication.title }} — Research{% endblock %}
+{% block content %}
+<section class="section" id="research-detail" style="max-width:800px; margin:0 auto;">
+  <div class="wide-container" style="padding-top:20px;">
+    <a href="{% url 'research' %}" class="btn btn-ghost btn-sm" style="margin-bottom:20px; color:var(--cat-research);">
+      <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      All Research
+    </a>
+
+    {% if publication.cover_image %}
+    <div style="width:100%; height:240px; border-radius:var(--radius); overflow:hidden; margin-bottom:30px; box-shadow:var(--shadow);" data-motion="reveal-liquid">
+      <img src="{{ publication.cover_image.url }}" alt="{{ publication.title }}" style="width:100%; height:100%; object-fit:cover;">
+    </div>
+    {% endif %}
+
+    <h1 class="section-title" data-motion="fade-up" data-motion-delay="0.1s" style="margin-bottom:12px; font-size:1.8rem;">{{ publication.title }}</h1>
+    <p style="color:var(--text-muted); font-size:1.05rem; margin-bottom:8px;" data-motion="fade-up" data-motion-delay="0.15s">{{ publication.authors }}</p>
+    <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:32px;" data-motion="fade-up" data-motion-delay="0.2s">{{ publication.publication_year }}</p>
+
+    <!-- Prose for markdown-like content -->
+    <div style="line-height:1.75; font-size:1.05rem; white-space:pre-line; margin-bottom:40px; color:var(--text);" data-motion="fade-up" data-motion-delay="0.25s">
+      {{ publication.abstract }}
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:40px;" data-motion="fade-up" data-motion-delay="0.3s">
+      {% if publication.pdf_file %}
+        <a href="{{ publication.pdf_file.url }}" target="_blank" rel="noopener" class="btn btn-outline">
+          <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          View PDF Report
+        </a> 
+        <a href="{{ publication.pdf_file.url }}" download class="btn btn-primary" style="background:var(--cat-research); border-color:var(--cat-research);">
+          <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF
+        </a>
+      {% endif %}
+      {% if publication.external_url %}
+        <a href="{{ publication.external_url }}" target="_blank" rel="noopener" class="btn btn-outline">
+          <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          View External Source
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

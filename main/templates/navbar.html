@@ -1,0 +1,119 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+
+<div class="scroll-progress" aria-hidden="true" style="width: 0%;"></div>
+<nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+  <div class="nav-container">
+    <a href="{% url 'home' %}" class="nav-brand" aria-label="{{ site_profile.full_name }}">
+      <div class="brand-logo" aria-hidden="true">{{ site_profile.full_name|make_list|first }}</div>
+      <div class="brand-text">
+        <span class="brand-name">{{ site_profile.full_name }}</span>
+        <span class="brand-sub">Professional Platform</span>
+      </div>
+    </a>
+
+    <ul class="nav-links" id="navLinks" role="list">
+      <span class="nav-links-indicator" id="navIndicator" aria-hidden="true"></span>
+      <li><a href="{% url 'home' %}"          class="nav-link" data-nav="home">Home</a></li>
+      <li><a href="{% url 'projects' %}"      class="nav-link" data-nav="projects">Projects</a></li>
+      <li><a href="{% url 'dashboards' %}"    class="nav-link" data-nav="dashboards">Dashboards</a></li>
+      <li><a href="{% url 'research' %}"      class="nav-link" data-nav="research">Research</a></li>
+      <li><a href="{% url 'activity_list' %}" class="nav-link" data-nav="activity_list">Recent</a></li>
+      <li><a href="{% url 'certificate_list' %}" class="nav-link" data-nav="certificate_list">Certificates</a></li>
+      <li><a href="{% url 'cv_view' %}"       class="nav-link" data-nav="cv_view">Resume</a></li>
+      <li><a href="{% url 'contact' %}"       class="nav-link" data-nav="contact">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      {% if request.user.is_staff %}
+        <a href="{% url 'studio:home' %}" class="nav-editor-link">
+          <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:14px;height:14px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Editor
+        </a>
+      {% endif %}
+
+      <button class="icon-btn" id="searchBtn" aria-label="Search" data-action="search">
+        <svg class="lm-icon lm-icon--nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle colour theme" data-action="toggle-theme">
+        <svg class="lm-icon lm-icon--nav" id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="lm-icon lm-icon--nav" id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+
+      {% if site_profile.active_cv %}
+      <a href="{{ site_profile.active_cv.file.url }}" download data-track-url="{% url 'cv_track' %}" data-download-label="Resume" class="btn btn-primary btn-sm nav-cv-btn magnetic">
+        <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Resume
+      </a>
+      {% else %}
+      <a href="{% url 'cv_view' %}" class="btn btn-primary btn-sm nav-cv-btn magnetic">
+        <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Resume
+      </a>
+      {% endif %}
+
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu panel -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <ul class="mobile-nav-links" role="list">
+      <li><a href="{% url 'home' %}"          class="nav-link">Home</a></li>
+      <li><a href="{% url 'projects' %}"      class="nav-link">Projects</a></li>
+      <li><a href="{% url 'dashboards' %}"    class="nav-link">Dashboards</a></li>
+      <li><a href="{% url 'research' %}"      class="nav-link">Research</a></li>
+      <li><a href="{% url 'activity_list' %}" class="nav-link">Recent</a></li>
+      <li><a href="{% url 'certificate_list' %}" class="nav-link">Certificates</a></li>
+      <li><a href="{% url 'cv_view' %}"       class="nav-link">Resume</a></li>
+      <li><a href="{% url 'contact' %}"       class="nav-link">Contact</a></li>
+    </ul>
+    <div class="mobile-actions">
+      {% if request.user.is_staff %}
+        <a href="{% url 'studio:home' %}" class="btn border border-indigo-500 text-indigo-400" style="width:100%;justify-content:center;">
+          <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:14px;height:14px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Editor
+        </a>
+      {% endif %}
+
+      <button class="mobile-theme-toggle" id="mobileThemeToggle" data-action="toggle-theme">
+        <svg class="lm-icon lm-icon--nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        Toggle theme
+      </button>
+      
+      {% if site_profile.active_cv %}
+      <a href="{{ site_profile.active_cv.file.url }}" download data-track-url="{% url 'cv_track' %}" data-download-label="Resume" class="btn btn-primary" style="width:100%;justify-content:center;">
+        <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download CV
+      </a>
+      {% else %}
+      <a href="{% url 'cv_view' %}" class="btn btn-primary" style="width:100%;justify-content:center;">
+        <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download CV
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="lm-menu-backdrop" id="menuBackdrop" aria-hidden="true"></div>
+
+  <!-- Search overlay -->
+  <div class="search-overlay" id="searchOverlay" role="search">
+    <div class="search-inner">
+      <div class="search-input-row">
+        <svg class="lm-icon lm-icon--nav search-icon-inner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Search projects, research, dashboards…" autocomplete="off" aria-label="Search" aria-expanded="false" />
+        <button class="icon-btn" id="searchClose" aria-label="Close search">
+          <svg class="lm-icon lm-icon--nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <ul class="search-results" id="searchResults" role="listbox"></ul>
+    </div>
+  </div>
+</nav>
+
+
+<script src="{% static 'js/navbar.js' %}"></script>

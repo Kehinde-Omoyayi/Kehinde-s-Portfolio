@@ -1,0 +1,19 @@
+{% load studio_extras %}
+<div class="mb-4">
+  {% if field.field.widget.input_type == "checkbox" %}
+    <label class="flex items-center gap-2 text-sm text-gray-300">
+      {{ field }}
+      {{ field.label }}
+    </label>
+  {% else %}
+    <label class="block text-sm text-gray-400 mb-1">{{ field.label }}</label>
+    {{ field }}
+    {% if field.field.widget.input_type == "file" and field.value %}
+      <p class="text-xs text-gray-500 mt-1">Current file:
+        <a href="{{ field.value.url }}" target="_blank" class="text-accent">{{ field.value }}</a>
+      </p>
+    {% endif %}
+  {% endif %}
+  {% if field.help_text %}<p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>{% endif %}
+  {% for error in field.errors %}<p class="text-xs text-red-400 mt-1">{{ error }}</p>{% endfor %}
+</div>

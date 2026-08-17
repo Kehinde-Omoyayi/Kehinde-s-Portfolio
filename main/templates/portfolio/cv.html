@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Resume — {{ site_profile.full_name|default:"Kehinde Omoyayi" }}{% endblock %}
+{% block content %}
+<section class="section" id="resume-page">
+  <div class="wide-container">
+  <div class="section-header" data-motion="fade-up" style="text-align: left; margin-bottom: 24px;">
+      <div>
+        <div class="section-eyebrow" style="color:var(--brand-primary-light);">Career</div>
+        <h1 class="section-title">My Resume</h1>
+      </div>
+    </div>
+
+    <div class="glass-card" style="padding:40px;" data-motion="reveal-liquid" data-motion-delay="0.1s">
+      {% if profile_cv %}
+        <div style="display:flex; align-items:center; gap:20px; margin-bottom:24px;">
+          <div style="background:color-mix(in srgb,var(--brand-primary-light) 15%,transparent); padding:6px; border-radius:var(--radius-md); overflow:hidden; width:80px; height:80px; display:flex; align-items:center; justify-content:center;">
+            {% if site_profile and site_profile.profile_picture %}
+              <img src="{{ site_profile.profile_picture.url }}" alt="{{ site_profile.full_name }}" style="width:100%; height:100%; object-fit:cover; border-radius:10px;">
+            {% else %}
+              <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--brand-primary-light);width:3rem;height:3rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            {% endif %}
+          </div>
+          <div>
+            <h3 style="font-size:1.25rem; font-weight:600; margin-bottom:4px; color:var(--text);">Detailed Resume</h3>
+            <p class="text-muted">You can view my resume online or download a PDF copy.</p>
+          </div>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:12px;">
+          <a href="{{ profile_cv.file.url }}" target="_blank" class="btn btn-outline">
+            <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            View in Browser
+          </a>
+          <a href="{{ profile_cv.file.url }}" download data-track-url="{% url 'cv_track' %}" data-download-label="Resume" class="btn btn-primary" >
+            <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download PDF
+          </a>
+        </div>
+      {% else %}
+        <p class="empty-state">No resume available.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

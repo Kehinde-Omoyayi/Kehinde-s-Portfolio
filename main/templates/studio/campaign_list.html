@@ -1,0 +1,74 @@
+{% extends "studio/base.html" %}
+{% block page_title %}Campaigns{% endblock %}
+{% block content %}
+
+{% if not email_configured %}
+  <div class="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 mb-5 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+    <div class="flex items-start gap-3">
+      <span class="text-amber-400 text-lg leading-none">⚠️</span>
+      <div>
+        <p class="text-amber-200 text-sm font-medium">Email sending isn't configured yet</p>
+        <p class="text-amber-200/70 text-xs mt-0.5">
+          Campaigns will save and mark themselves "sent", but nothing will actually leave the
+          server until you add SMTP details (<code class="text-amber-100">EMAIL_HOST</code>,
+          <code class="text-amber-100">EMAIL_HOST_USER</code>,
+          <code class="text-amber-100">EMAIL_HOST_PASSWORD</code>) to your <code class="text-amber-100">.env</code> file.
+          Currently using: <code class="text-amber-100">{{ email_backend }}</code>
+        </p>
+      </div>
+    </div>
+  </div>
+{% else %}
+  <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 mb-5 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+    <p class="text-emerald-200 text-sm">✅ Email is configured and ready to send.</p>
+    <form action="{% url 'studio:campaign_send_test' %}" method="post" class="shrink-0">
+      {% csrf_token %}
+      <button type="submit" class="border border-emerald-400/40 text-emerald-200 hover:bg-emerald-500/10 text-xs px-3 py-1.5 rounded-lg whitespace-nowrap">
+        Send test email to me
+      </button>
+    </form>
+  </div>
+{% endif %}
+
+<div class="flex items-center justify-between mb-5 gap-3 flex-wrap">
+  <p class="text-sm text-gray-500">Write once, send to every active subscriber.</p>
+  <a href="{% url 'studio:campaign_create' %}" class="bg-accent hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg whitespace-nowrap">📣 New Campaign</a>
+</div>
+
+<div class="rounded-xl border border-white/10 overflow-x-auto">
+  <table class="w-full text-sm">
+    <thead class="bg-white/5 text-gray-400 text-left">
+      <tr>
+        <th class="px-4 py-3 font-medium">Subject</th>
+        <th class="px-4 py-3 font-medium">Status</th>
+        <th class="px-4 py-3 font-medium">Recipients</th>
+        <th class="px-4 py-3 font-medium text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-white/5">
+      {% for campaign in campaigns %}
+        <tr class="hover:bg-white/5">
+          <td class="px-4 py-3 text-gray-200">{{ campaign.subject }}</td>
+          <td class="px-4 py-3">
+            {% if campaign.is_sent %}<span class="text-emerald-400">Sent {{ campaign.sent_at|date:"M j, Y" }}</span>{% else %}<span class="text-gray-500">Draft</span>{% endif %}
+          </td>
+          <td class="px-4 py-3 text-gray-400">{{ campaign.recipient_count }}</td>
+          <td class="px-4 py-3 text-right whitespace-nowrap">
+            {% if not campaign.is_sent %}
+              <form action="{% url 'studio:campaign_send' campaign.pk %}" method="post" class="inline"
+                    onsubmit="return confirm('Send this campaign to every active subscriber now? This can\'t be undone.');">
+                {% csrf_token %}
+                <button type="submit" class="text-accent text-xs">Send now</button>
+              </form>
+            {% else %}
+              <span class="text-gray-600 text-xs">—</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="px-4 py-8 text-center text-gray-500">No campaigns yet — click "New Campaign" to write one.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

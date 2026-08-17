@@ -1,0 +1,42 @@
+{% extends "studio/base.html" %}
+{% block page_title %}Dashboards{% endblock %}
+{% block content %}
+
+<div class="flex items-center justify-between mb-5">
+  <p class="text-sm text-gray-500">{{ dashboards|length }} dashboard(s)</p>
+  <a href="{% url 'studio:dashboard_create' %}" class="bg-accent hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg">📈 Add Dashboard</a>
+</div>
+
+<div class="rounded-xl border border-white/10 overflow-hidden">
+  <table class="w-full text-sm">
+    <thead class="bg-white/5 text-gray-400 text-left">
+      <tr>
+        <th class="px-4 py-3 font-medium">Title</th>
+        <th class="px-4 py-3 font-medium">Embed type</th>
+        <th class="px-4 py-3 font-medium">Published</th>
+        <th class="px-4 py-3 font-medium">Featured</th>
+        <th class="px-4 py-3 font-medium">Metrics</th>
+        <th class="px-4 py-3 font-medium text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-white/5">
+      {% for dashboard in dashboards %}
+        <tr class="hover:bg-white/5">
+          <td class="px-4 py-3 text-gray-200">{{ dashboard.title }}</td>
+          <td class="px-4 py-3 text-gray-400">{{ dashboard.get_embed_type_display }}</td>
+          <td class="px-4 py-3">{% if dashboard.is_published %}✅{% else %}—{% endif %}</td>
+          <td class="px-4 py-3">{% if dashboard.is_featured %}✅{% else %}—{% endif %}</td>
+          <td class="px-4 py-3 text-gray-400">{{ dashboard.metrics.count }}</td>
+          <td class="px-4 py-3 text-right whitespace-nowrap">
+            <a href="{{ dashboard.get_absolute_url }}" target="_blank" class="text-gray-400 text-xs mr-3">View</a>
+            <a href="{% url 'studio:dashboard_update' dashboard.pk %}" class="text-accent text-xs mr-3">Edit</a>
+            <a href="{% url 'studio:dashboard_delete' dashboard.pk %}" class="text-red-400 text-xs">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="px-4 py-8 text-center text-gray-500">No dashboards yet — click "Add Dashboard" to create the first one.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

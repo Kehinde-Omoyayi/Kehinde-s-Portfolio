@@ -1,0 +1,99 @@
+{% load static %}
+<footer class="footer" aria-label="Site footer" style="background: color-mix(in srgb, var(--bg-base) 50%, transparent); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-top: 1px solid color-mix(in srgb, var(--border) 50%, transparent);">
+  <div class="wide-container footer-grid">
+
+    <div>
+      <div class="footer-brand">
+        <div class="brand-logo" aria-hidden="true" style="width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;background:linear-gradient(135deg, var(--brand-blue), var(--brand-cyan));">
+          {{ site_profile.full_name|make_list|first }}
+        </div>
+        <span style="font-weight:700;font-size:1rem;color:var(--text);">{{ site_profile.full_name }}</span>
+      </div>
+      {% if site_profile.short_bio %}
+      <p class="footer-bio">{{ site_profile.short_bio }}</p>
+      {% endif %}
+      <div class="social-icons">
+        {% for link in social_links %}
+        <a href="{{ link.href }}" class="social-btn {{ link.platform }}" title="{{ link.get_platform_display }}" target="_blank" rel="noopener" aria-label="{{ link.get_platform_display }}">
+          {% if link.platform == 'linkedin' %}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          {% elif link.platform == 'github' %}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          {% elif link.platform == 'email' %}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          {% elif link.platform == 'twitter' %}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4l11.733 16H20L8.267 4z"/><path d="M4 20l6.768-6.768M20 4l-6.768 6.768"/></svg>
+          {% elif link.platform == 'whatsapp' %}
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; aspect-ratio: 1 / 1; box-sizing: border-box; background-color: #25D366; color: white; border-radius: 14px;">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true" style="display: block; flex-shrink: 0;">
+                <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.334 4.993L2.1 21.9l5.033-1.32a9.935 9.935 0 0 0 4.88 1.29h.004c5.507 0 9.99-4.478 9.993-9.985A9.966 9.966 0 0 0 12.012 2v0zm5.952 14.34c-.26.73-1.516 1.336-2.078 1.423-.538.083-1.235.127-3.642-.87-2.906-1.205-4.773-4.253-4.918-4.448-.146-.194-1.173-1.562-1.173-2.978 0-1.417.747-2.114 1.015-2.404.229-.25.608-.363.955-.363.112 0 .223.006.32.016.347.037.535.087.69.462.195.47 1.174 2.87 1.272 3.079.1.209.167.452.033.722-.134.27-.294.49-.553.76-.237.245-.515.525-.237 1.002.585.996 1.944 2.37 3.327 3.19.742.44 1.353.643 1.77.838.416.195.962.162 1.348-.163.469-.395 1.173-1.378 1.543-1.956.242-.379.626-.43 1.05-.27.423.16 2.668 1.258 3.13 1.49.463.228.771.341.88.528.11.187.11 1.092-.15 1.822z"/>
+              </svg>
+            </span>
+          {% elif link.platform == 'instagram' %}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          {% elif link.platform == 'facebook' %}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          {% elif link.platform == 'youtube' %}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+          {% else %}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          {% endif %}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="footer-nav-blocks">
+      <div class="footer-links">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'projects' %}">Projects</a></li>
+          <li><a href="{% url 'dashboards' %}">Dashboards</a></li>
+          <li><a href="{% url 'research' %}">Research</a></li>
+          <li><a href="{% url 'activity_list' %}">Recent Activity</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="{% url 'certificate_list' %}">Certificates</a></li>
+          <li><a href="{% url 'contact' %}">Contact</a></li>
+          <li><a href="{% url 'cv_view' %}">View Resume</a></li>
+        </ul>
+        {% if site_profile and site_profile.active_cv %}
+          <a href="{{ site_profile.active_cv.file.url }}" download data-track-url="{% url 'cv_track' %}" data-download-label="Resume" class="footer-resume-btn magnetic">
+            <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download PDF
+          </a>
+        {% else %}
+          <a href="{% url 'cv_view' %}" class="footer-resume-btn magnetic">
+            <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download PDF
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- COL 3: Newsletter -->
+    <div class="footer-col footer-newsletter-col">
+      <div class="footer-newsletter-card">
+        <h4>Stay in the loop</h4>
+        <p>Get an email when I publish new projects, dashboards or research.</p>
+        <form action="{% url 'newsletter:subscribe' %}" method="post" class="newsletter-form">
+          {% csrf_token %}
+          <input type="email" name="email" required placeholder="you@example.com" class="subscribe-input">
+          <button type="submit" class="btn btn-primary btn-sm">Subscribe</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <div class="wide-container footer-bottom-inner">
+      <p>&copy; {% now "Y" %} {{ site_profile.full_name }}. All rights reserved.</p>
+    </div>
+  </div>
+</footer>

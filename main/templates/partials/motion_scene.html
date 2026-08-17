@@ -1,0 +1,31 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/motion-scene.css' %}">
+
+<section class="motion-scene" id="motion-scene" aria-label="{{ motion_scene_title|default:'Signal to Insight' }}">
+  <canvas class="motion-scene-bg" id="motionSceneBg" aria-hidden="true"></canvas>
+
+  <div class="wide-container motion-scene-inner">
+    <div class="section-eyebrow">{{ motion_scene_eyebrow|default:"Process" }}</div>
+    <h2 class="section-title">{{ motion_scene_title|default:"From Noise to Insight" }}</h2>
+
+    <div class="motion-gallery" id="motionGallery">
+      {% for item in motion_items %}
+      <figure class="motion-image" style="--depth: 0.{{ forloop.counter|add:2 }};">
+        <img src="{{ item.image_url }}"
+             alt="{{ item.caption|default:'Gallery image' }}"
+             loading="lazy" />
+        <div class="motion-image-scan" aria-hidden="true"></div>
+        {% if item.caption %}<figcaption>{{ item.caption }}</figcaption>{% endif %}
+      </figure>
+      {% empty %}
+        <p class="empty-state">
+          No images yet — pass a list called <code>motion_items</code> from your view,
+          each with an <code>image_url</code> (and optional <code>caption</code>).
+        </p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script src="{% static 'js/motion-scene.js' %}" defer></script>

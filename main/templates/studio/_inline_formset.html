@@ -1,0 +1,78 @@
+{% load studio_extras %}
+<div class="border-t border-white/10 pt-5 mt-2">
+  <h3 class="text-white font-semibold text-sm mb-1">{{ title }}</h3>
+  {% if help %}<p class="text-xs text-gray-500 mb-3">{{ help }}</p>{% endif %}
+
+  {{ formset.management_form }}
+
+  {% if formset.non_form_errors %}
+    <div class="rounded-lg border border-red-500/40 bg-red-500/10 text-red-200 text-sm px-4 py-2 mb-3">
+      {{ formset.non_form_errors.0 }}
+    </div>
+  {% endif %}
+
+  <div id="{{ formset_id }}-rows" class="space-y-3">
+    {% for f in formset.forms %}
+      <div class="rounded-lg border border-white/10 bg-black/20 p-3 grid grid-cols-1 md:grid-cols-4 gap-2 items-start {{ formset_id }}-row">
+        {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
+        {% for field in f.visible_fields %}
+          {% if field.name != "DELETE" %}
+            <div>
+              <label class="block text-xs text-gray-500 mb-1">{{ field.label }}</label>
+              {{ field }}
+              {% for error in field.errors %}<p class="text-xs text-red-400 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+          {% endif %}
+        {% endfor %}
+        <div class="flex items-end h-full">
+          {% if f.DELETE %}
+            <label class="flex items-center gap-1.5 text-xs text-red-400">
+              {{ f.DELETE }} Remove
+            </label>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if not formset.max_num or formset.forms|length < formset.max_num %}
+    <button type="button" onclick="addFormsetRow_{{ formset_id }}()"
+            class="mt-3 text-xs text-accent border border-accent/40 hover:bg-accent/10 px-3 py-1.5 rounded-lg">
+      + Add another
+    </button>
+  {% else %}
+    <p class="mt-3 text-xs text-gray-500">Maximum of {{ formset.max_num }} reached.</p>
+  {% endif %}
+
+  <template id="{{ formset_id }}-empty-template">
+    <div class="rounded-lg border border-white/10 bg-black/20 p-3 grid grid-cols-1 md:grid-cols-4 gap-2 items-start {{ formset_id }}-row">
+      {% for hidden in formset.empty_form.hidden_fields %}{{ hidden }}{% endfor %}
+      {% for field in formset.empty_form.visible_fields %}
+        {% if field.name != "DELETE" %}
+          <div>
+            <label class="block text-xs text-gray-500 mb-1">{{ field.label }}</label>
+            {{ field }}
+          </div>
+        {% endif %}
+      {% endfor %}
+      <div class="flex items-end h-full">
+        {% if formset.empty_form.DELETE %}
+          <label class="flex items-center gap-1.5 text-xs text-red-400">{{ formset.empty_form.DELETE }} Remove</label>
+        {% endif %}
+      </div>
+    </div>
+  </template>
+
+  <script>
+    function addFormsetRow_{{ formset_id }}() {
+      const totalInput = document.getElementById("id_{{ formset.prefix }}-TOTAL_FORMS");
+      const index = parseInt(totalInput.value, 10);
+      const template = document.getElementById("{{ formset_id }}-empty-template").innerHTML.replace(/__prefix__/g, index);
+      const container = document.getElementById("{{ formset_id }}-rows");
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = template;
+      container.appendChild(wrapper.firstElementChild);
+      totalInput.value = index + 1;
+    }
+  </script>
+</div>

@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}{{ site_profile.full_name }} — Portfolio{% endblock %}</title>
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) { /* localStorage unavailable — dark default from the html tag stands */ }
+    })();
+  </script>
+
+  <!-- Stylesheets: tokens first (colors/shape primitives), then base
+       styles, then the motion layer (reveal states, mobile menu,
+       search dropdown, toasts — see liquid-motion.css). -->
+  <link rel="stylesheet" href="{% static 'css/tokens.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/liquid-motion.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/popup-messages.css' %}" />
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="site-body">
+
+  {% include "navbar.html" %}
+
+  {% include "partials/messages_popup.html" %}
+
+  <main id="main-content" class="site-main p-4 md:p-8">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  {% include "footer.html" %}
+
+  <div class="lm-theme-reveal" id="lmThemeReveal" aria-hidden="true"></div>
+  <div class="lm-page-wipe" id="lmPageWipe" aria-hidden="true"></div>
+
+  <!-- Shown once, only on small screens, to first-time visitors -->
+  <div class="lm-desktop-notice" id="lmDesktopNotice" role="status" aria-live="polite">
+    <div class="lm-desktop-notice-inner">
+      <span class="lm-desktop-notice-icon" aria-hidden="true">🖥️</span>
+      <p>Heads up — dashboards, charts and animations shine brightest on a desktop or laptop. Mobile works fine too, just a more compact experience.</p>
+      <button type="button" id="lmDesktopNoticeClose" aria-label="Dismiss">&times;</button>
+    </div>
+  </div>
+
+  <!-- Back to top button -->
+  <button id="backToTopBtn" aria-label="Back to top" class="btt-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+
+  <style>
+    /* Padding for fixed navbar */
+    .site-body {
+      padding-top: var(--nav-h, 72px);
+    }
+    
+    .btt-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--brand-blue);
+      color: #fff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 90;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px) scale(0.9);
+      transition: all 0.4s var(--ease-liquid);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    }
+    .btt-btn.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+    .btt-btn:hover {
+      background: var(--brand-cyan);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+  </style>
+
+  <script src="{% static 'js/icon-colors.js' %}"></script>
+  <script src="{% static 'js/liquid-motion.js' %}"></script>
+
+  <script>
+    // Back to top functionality
+    const bttBtn = document.getElementById('backToTopBtn');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        bttBtn.classList.add('visible');
+      } else {
+        bttBtn.classList.remove('visible');
+      }
+    });
+    bttBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+
+  {% block extra_js %}{% endblock %}
+
+</body>
+</html>

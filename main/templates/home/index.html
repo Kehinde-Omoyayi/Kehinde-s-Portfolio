@@ -1,0 +1,679 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/motion-scene.css' %}">
+{% endblock %}
+{% block title %}{{ site_profile.full_name|default:"Kehinde Omoyayi" }} — Data Analyst & Backend Developer{% endblock %}
+{% block meta_description %}{{ site_profile.short_bio|default:"Data Analyst, Backend Developer and Research Enthusiast. Transforming raw data into actionable insights and scalable backend solutions." }}{% endblock %}
+
+{% block content %}
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<section class="hero" id="home" aria-label="Introduction">
+  <canvas id="particleCanvas" class="particle-canvas" aria-hidden="true"></canvas>
+  <div class="hero-bg-orbs" aria-hidden="true">
+    <div class="orb orb-1" style="background:var(--orb-1);width:600px;height:600px;top:-150px;left:-100px;"></div>
+    <div class="orb orb-2" style="background:var(--orb-2);width:450px;height:450px;bottom:-80px;right:5%;"></div>
+    <div class="orb orb-3" style="background:var(--orb-3);width:350px;height:350px;top:40%;left:35%;"></div>
+    <div class="orb orb-4" style="background:var(--orb-4);width:250px;height:250px;top:20%;right:20%;"></div>
+  </div>
+
+  <div class="hero-container wide-container">
+
+    <!-- Hero Content -->
+    <div class="hero-content">
+      <div class="hero-badge animate-fade-up" style="--d:0.1s" data-motion="fade-up" data-motion-delay="0.1s">
+        <span class="badge-dot"></span>
+        {{ site_profile.availability_status|default:"Available for Work" }}
+      </div>
+
+      <h1 class="hero-title animate-fade-up" style="--d:0.2s" data-motion="fade-up" data-motion-delay="0.2s">
+        Turning Data Into<br/>
+        <span class="typed-wrapper"><span class="typed-text" id="typedText"></span><span class="cursor" aria-hidden="true">|</span></span><br/>
+        <span class="hero-highlight-2">Solutions.</span> Creating Impact.
+      </h1>
+
+      <div class="hero-subtitle animate-fade-up" style="--d:0.35s" data-motion="fade-up" data-motion-delay="0.35s">
+        <span class="subtitle-roles">
+          {% if site_profile and site_profile.role_titles.all %}
+            {% for role in site_profile.role_titles.all|slice:":3" %}
+              <span>{{ role }}</span>
+            {% endfor %}
+          {% else %}
+            <span>Data Analyst</span>
+            <span>Backend Dev (Python)</span>
+            <span>Bsc Research Work </span>
+          {% endif %}
+        </span>
+        <p>{% if site_profile %}{{ site_profile.short_bio }}{% endif %}</p>
+      </div>
+      <div class="hero-ctas animate-fade-up" style="--d:0.45s" data-motion="fade-up" data-motion-delay="0.45s">
+        <a href="{% url 'projects' %}" class="btn btn-primary" data-motion="page-wipe">
+          <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9S3 16.97 3 12 7.03 3 12 3s9 4.03 9 9z"/></svg>
+          Explore My Work
+        </a>
+        <a href="{% url 'dashboards' %}" class="btn btn-ghost">
+          <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          View Dashboards
+        </a>
+        <a href="{% url 'research' %}" class="btn btn-ghost">
+          <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Read Research
+        </a>
+        <a href="{% url 'contact' %}" class="btn btn-ghost">
+          <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          About Me
+        </a>
+      </div>
+    </div><!-- /hero-content -->
+
+    <!-- Profile photo -->
+    <div class="hero-profile animate-fade-up" style="--d:0.25s" data-motion="fade-up" data-motion-delay="0.25s">
+      <canvas class="profile-motion-bg" id="profileMotionBg" aria-hidden="true"></canvas>
+      <div class="profile-glow-ring" aria-hidden="true"></div>
+      <div class="profile-avatar">
+        {% if site_profile and site_profile.profile_picture %}
+          <img src="{{ site_profile.profile_picture.url }}"
+               alt="{{ site_profile.full_name|default:'Profile photo' }}"
+               class="motion-resolve" id="profileMotionImg" />
+        {% else %}
+          {# No photo uploaded yet - fall back to an inline data-URI
+             placeholder instead of a static image file, so this never
+             404s/500s on a fresh install before a profile picture has
+             been added. Kept as a real <img> (not inline <svg>) so the
+             load-triggered reveal animation in motion-scene.js still
+             fires correctly. #}
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%231b2233'/%3E%3Ccircle cx='100' cy='78' r='38' fill='%233a4460'/%3E%3Cpath d='M30 190c8-46 46-72 70-72s62 26 70 72' fill='%233a4460'/%3E%3C/svg%3E"
+               alt="{{ site_profile.full_name|default:'Kehinde Omoyayi' }}"
+               class="motion-resolve" id="profileMotionImg" />
+        {% endif %}
+        <div class="profile-scan" id="profileMotionScan" aria-hidden="true"></div>
+      </div>
+
+      <div class="profile-badge-floating pb-top-left" aria-hidden="true">
+        <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--brand-emerald)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Data Analytics
+      </div>
+      <div class="profile-badge-floating pb-top-right" aria-hidden="true">
+        <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--brand-accent)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Backend Dev
+      </div>
+      <div class="profile-badge-floating pb-bottom" aria-hidden="true">
+        <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--brand-amber)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/><circle cx="12" cy="12" r="10"/></svg>
+        Public Speaking
+      </div>
+    </div><!-- /hero-profile -->
+
+    <!-- Hero side cards -->
+    <div class="hero-side animate-fade-left" style="--d:0.3s" data-motion="fade-up" data-motion-delay="0.3s">
+      <div class="hero-card glass-card">
+        <h4 class="card-label">
+          <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9S3 16.97 3 12 7.03 3 12 3s9 4.03 9 9z"/></svg>
+          Currently Focused On
+        </h4>
+        <ul class="focus-list">
+          {% for item in currently_focused %}
+            <li><span class="dot blue"></span>{{ item.text }}</li>
+          {% empty %}
+            <li><span class="dot blue"></span>Data Analytics</li>
+            <li><span class="dot purple"></span>Backend Development</li>
+            <li><span class="dot green"></span>Machine Learning</li>
+            <li><span class="dot orange"></span>Research &amp; Innovation</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="hero-card glass-card">
+        <h4 class="card-label">Open to Opportunities</h4>
+        <ul class="opp-list">
+          {% for role in open_roles %}
+            <li>{{ role.roles }}</li>
+          {% empty %}
+          ...
+          {% endfor %}
+        </ul>
+        <div class="available-badge">
+          <span class="avail-dot"></span>
+          {% if site_profile %}{{ site_profile.availability_status }}{% else %}Available for Work{% endif %}
+        </div>
+      </div>
+    </div><!-- /hero-side -->
+
+  </div><!-- /hero-container -->
+</section>
+
+<!-- ═══════════════════════════════ STATS BAR ═══════════════════════════════ -->
+<section class="stats-bar" id="statsBar" aria-label="Key statistics">
+  <div class="wide-container stats-container">
+
+    <div class="stat-item" data-count="{{ stat_projects }}" data-motion="count-up" data-motion-color="projects">
+      <div class="stat-icon-wrap" style="--c:var(--cat-projects)" data-icon-category="projects">
+        <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--cat-projects)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="stat-text">
+        <div class="stat-val"><span class="stat-num">{{ stat_projects }}</span><span class="stat-plus">+</span></div>
+        <p>Projects Completed</p>
+      </div>
+    </div>
+
+    <div class="stat-divider" aria-hidden="true"></div>
+
+    <div class="stat-item" data-count="{{ stat_dashboards }}" data-motion="count-up" data-motion-color="dashboards">
+      <div class="stat-icon-wrap" style="--c:var(--cat-dashboards)" data-icon-category="dashboards">
+        <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--cat-dashboards)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div class="stat-text">
+        <div class="stat-val"><span class="stat-num">{{ stat_dashboards }}</span><span class="stat-plus">+</span></div>
+        <p>Interactive Dashboards</p>
+      </div>
+    </div>
+
+    <div class="stat-divider" aria-hidden="true"></div>
+
+    <div class="stat-item" data-count="{{ stat_research }}" data-motion="count-up" data-motion-color="research">
+      <div class="stat-icon-wrap" style="--c:var(--cat-research)" data-icon-category="research">
+        <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--cat-research)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>
+      </div>
+      <div class="stat-text">
+        <div class="stat-val"><span class="stat-num">{{ stat_research }}</span><span class="stat-plus">+</span></div>
+        <p>Research Publications</p>
+      </div>
+    </div>
+
+    <div class="stat-divider" aria-hidden="true"></div>
+
+    <div class="stat-item" data-count="{{ stat_technologies }}" data-motion="count-up" data-motion-color="skills">
+      <div class="stat-icon-wrap" style="--c:var(--cat-skills)" data-icon-category="skills">
+        <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--cat-skills)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      </div>
+      <div class="stat-text">
+        <div class="stat-val"><span class="stat-num">{{ stat_technologies }}</span><span class="stat-plus">+</span></div>
+        <p>Technologies</p>
+      </div>
+    </div>
+
+    <div class="stat-divider" aria-hidden="true"></div>
+
+    <div class="stat-item" data-count="{{ stat_certificates }}" data-motion="count-up" data-motion-color="certificates">
+      <div class="stat-icon-wrap" style="--c:var(--cat-certificates)" data-icon-category="certificates">
+        <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--cat-certificates)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+      </div>
+      <div class="stat-text">
+        <div class="stat-val"><span class="stat-num">{{ stat_certificates }}</span><span class="stat-plus">+</span></div>
+        <p>Certifications</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ ABOUT + EXPLORE ═══════════════════════════════ -->
+<section class="section" id="about" aria-label="About me">
+  <div class="wide-container grid-2-col">
+
+    <div class="about-col" data-motion="reveal-liquid" data-motion-delay="0s">
+      <div class="section-eyebrow">Who I Am</div>
+      <h2 class="section-title-sm">About Me</h2>
+      <p class="about-text">{{ site_profile.short_bio }}</p>
+      <div class="about-highlights">
+        <div class="highlight-chip">
+          <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--brand-accent)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          {{ site_profile.location }}
+        </div>
+        <div class="highlight-chip">
+          <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--brand-accent)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          {{ site_profile.education }}
+        </div>
+        <div class="highlight-chip">
+          <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--brand-accent)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          {{ site_profile.experience_years }}
+        </div>
+      </div>
+      <a href="{% url 'contact' %}" class="btn btn-outline">
+        More About Me
+        <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+
+    <div class="explore-col" data-motion="reveal-liquid" data-motion-delay="0.15s">
+      <div class="section-eyebrow">Navigate</div>
+      <h2 class="section-title-sm">Explore the Platform</h2>
+      <div class="explore-grid" id="exploreGrid">
+
+        <a href="{% url 'projects' %}" class="explore-card" id="exp-projects" style="--clr:var(--cat-projects)">
+          <div class="exp-icon" style="--clr:var(--cat-projects)" data-icon-category="projects">
+            <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--cat-projects)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="exp-text">
+            <strong>Projects <span class="exp-count">{{ stat_projects }}+</span></strong>
+            <p>View all projects <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></p>
+          </div>
+        </a>
+
+        <a href="{% url 'dashboards' %}" class="explore-card" id="exp-dashboards" style="--clr:var(--cat-dashboards)">
+          <div class="exp-icon" style="--clr:var(--cat-dashboards)" data-icon-category="dashboards">
+            <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--cat-dashboards)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+          <div class="exp-text">
+            <strong>Dashboards <span class="exp-count">{{ stat_dashboards }}+</span></strong>
+            <p>Explore dashboards <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></p>
+          </div>
+        </a>
+
+        <a href="{% url 'research' %}" class="explore-card" id="exp-research" style="--clr:var(--cat-research)">
+          <div class="exp-icon" style="--clr:var(--cat-research)" data-icon-category="research">
+            <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--cat-research)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>
+          </div>
+          <div class="exp-text">
+            <strong>Academic Research <span class="exp-count">{{ stat_research }}+</span></strong>
+            <p>Read publications <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></p>
+          </div>
+        </a>
+        
+        <a href="{% url 'certificate_list' %}" class="explore-card" id="exp-research" style="--clr:var(--cat-research)">
+          <div class="exp-icon" style="--clr:var(--cat-research)" data-icon-category="research">
+             <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--cat-certificates)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+          </div>
+          <div class="exp-text">
+            <strong>Certificates <span class="exp-count">{{ stat_certificates }}+</span></strong>
+            <p>View all Certification <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></p>
+          </div>
+        </a>
+
+        <a href="#expertise" class="explore-card" id="exp-skills" style="--clr:var(--cat-skills)">
+          <div class="exp-icon" style="--clr:var(--cat-skills)" data-icon-category="skills">
+            <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--cat-skills)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <div class="exp-text">
+            <strong>Skills <span class="exp-count">{{ stat_technologies }}+</span></strong>
+            <p>Tools &amp; technologies <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></p>
+          </div>
+        </a>
+
+        <a href="{% url 'contact' %}" class="explore-card" id="exp-contact" style="--clr:var(--cat-contact)">
+          <div class="exp-icon" style="--clr:var(--cat-contact)" data-icon-category="contact">
+            <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--cat-contact)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="exp-text">
+            <strong>Contact</strong>
+            <p>Let's connect <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></p>
+          </div>
+        </a>
+
+      </div>
+    </div><!-- /explore-col -->
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FEATURED PROJECTS ═══════════════════════════════ -->
+<section class="section bg-alt" id="projects" aria-label="Featured projects">
+  <div class="wide-container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Portfolio</div>
+        <h2 class="section-title">Featured Projects</h2>
+      </div>
+      <a href="{% url 'projects' %}" class="view-all">
+        View All Projects
+        <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="projects-grid" id="projectsGrid">
+      {% for project in featured_projects %}
+      <article class="project-card" data-motion="reveal-liquid" data-motion-delay="{{ forloop.counter0|stringformat:'s' | add:'0.' }}s">
+        <div class="project-img">
+          <div class="project-img-lines" aria-hidden="true"></div>
+          {% if project.cover_image %}
+          <img src="{{ project.cover_image.url }}" alt="{{ project.name }}" loading="lazy" />
+          {% endif %}
+          <div class="project-img-overlay" aria-hidden="true"></div>
+        </div>
+        <div class="project-tags">
+          {% for category in project.categories.all %}
+            <span class="tag tag-da">{{ category.name }}</span>
+          {% endfor %}
+        </div>
+        <div class="project-body">
+          <a href="{{ project.get_absolute_url }}">
+          <h3 class="project-title">{{ project.name }}</h3>
+          <p class="project-desc">{{ project.summary }}</p>
+          </a>
+          <div class="project-techs">
+            {% for tool in project.technologies.all %}
+              <span class="tech-badge">{{ tool.name }}</span>
+            {% endfor %}
+          </div>
+          <div class="project-links">
+            <a href="{{ project.get_absolute_url }}" class="project-link" title="View Project">
+              <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+            {% for link in project.links.all %}
+            <a href="{{ link.url }}" class="project-link" target="_blank" rel="noopener" title="{{ link.get_link_type_display }}">
+              <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+      </article>
+      {% empty %}
+        <p class="empty-state">No featured projects yet — add some in the admin.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FEATURED DASHBOARDS ═══════════════════════════════ -->
+<section class="section" id="dashboards" aria-label="Featured dashboards">
+  <div class="wide-container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Analytics</div>
+        <h2 class="section-title">Featured Dashboards</h2>
+      </div>
+      <a href="{% url 'dashboards' %}" class="view-all">
+        View All Dashboards
+        <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="dashboards-grid" id="dashboardsGrid">
+      {% for dashboard in featured_dashboards %}
+      <article class="dashboard-card" data-motion="reveal-liquid" data-motion-delay="0.{{ forloop.counter0 }}s">
+        <div class="db-header">
+          <div>
+            <div class="db-title">{{ dashboard.title }}</div>
+            {% if dashboard.description %}
+            <div class="db-sub">{{ dashboard.description|truncatechars:90 }}</div>
+            {% endif %}
+          </div>
+          {% if dashboard.embed_type %}
+          <span class="db-tag">{{ dashboard.get_embed_type_display }}</span>
+          {% endif %}
+        </div>
+        {% if dashboard.metrics.all %}
+        <div class="db-metrics">
+          {% for metric in dashboard.metrics.all|slice:":3" %}
+          <div class="db-metric">
+            <span class="label">{{ metric.label }}</span>
+            <span class="value" style="color:var(--cat-dashboards)">{{ metric.value }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if dashboard.thumbnail %}
+        <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--border);">
+          <img src="{{ dashboard.thumbnail.url }}" alt="{{ dashboard.title }}" style="width:100%; height:auto; display:block;">
+        </div>
+        {% endif %}
+        {% if dashboard.technologies.all %}
+        <div class="db-footer">
+          {% for tool in dashboard.technologies.all %}
+            <span class="tech-badge">{{ tool.name }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if dashboard.gallery_images.all %}
+        <div style="margin-bottom:40px; padding-left:20px; padding-right:20px;" data-motion="fade-up">
+          <h3 class="section-title-sm" style="font-size:1.2rem; margin-bottom:12px;">More views</h3>
+          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:12px;">
+            {% for img in dashboard.gallery_images.all %}
+              <button type="button" class="dash-gallery-thumb" data-full="{{ img.image.url }}" data-caption="{{ img.caption|default:dashboard.title }}"
+                      style="padding:0; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; cursor:pointer; background:var(--bg-card); display:flex; flex-direction:column;">
+                <img src="{{ img.image.url }}" alt="{{ img.caption|default:dashboard.title }}" style="width:100%; height:110px; object-fit:cover; display:block;">
+                {% if img.caption %}<span class="text-muted" style="font-size:0.75rem; padding:6px 8px; text-align:left;">{{ img.caption }}</span>{% endif %}
+              </button>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        
+        <div id="dashGalleryLightbox" style="display:none; position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,0.85); align-items:center; justify-content:center; padding:24px; cursor:zoom-out;">
+          <figure style="max-width:min(92vw, 1000px); max-height:88vh; margin:0; text-align:center;">
+            <img id="dashGalleryLightboxImg" src="" alt="" style="max-width:100%; max-height:78vh; border-radius:var(--radius-sm); box-shadow:var(--shadow);">
+            <figcaption id="dashGalleryLightboxCaption" class="text-muted" style="margin-top:12px; font-size:0.9rem;"></figcaption>
+          </figure>
+        </div>
+
+        <script>
+          (function () {
+            var lightbox = document.getElementById('dashGalleryLightbox');
+            var img = document.getElementById('dashGalleryLightboxImg');
+            var caption = document.getElementById('dashGalleryLightboxCaption');
+            if (!lightbox) return;
+
+            document.querySelectorAll('.dash-gallery-thumb').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                img.src = btn.dataset.full;
+                img.alt = btn.dataset.caption;
+                caption.textContent = btn.dataset.caption;
+                lightbox.style.display = 'flex';
+              });
+            });
+            lightbox.addEventListener('click', function () { lightbox.style.display = 'none'; });
+            document.addEventListener('keydown', function (e) {
+              if (e.key === 'Escape') lightbox.style.display = 'none';
+            });
+          })();
+        </script>
+        
+        <div class="db-open-btn-wrap" style="padding:0 22px 20px;">
+          {% if dashboard.external_url %}
+          <a href="{{ dashboard.external_url }}" target="_blank" rel="noopener" class="db-open-btn" data-motion="page-wipe">
+            <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Open Dashboard
+          </a>
+          {% else %}
+          <a href="{{ dashboard.get_absolute_url }}" class="db-open-btn">
+            <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            View Details
+          </a>
+          {% endif %}
+        </div>
+      </article>
+      {% empty %}
+        <p class="empty-state">No featured dashboards yet — add some in the admin.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!--   LASTEST ACTIVITY-->
+<section class="section bg-alt" id="insights" aria-label="Latest insights and activity">
+  <div class="wide-container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Updates</div>
+        <h2 class="section-title">Latest Insights</h2>
+      </div>
+      <a href="{% url 'activity_list' %}" class="view-all">
+        View All
+        <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+
+    <div class="insights-grid" id="insightsList">
+      {% for activity in latest_activity %}
+      <article class="insight-card animate-on-scroll" style="--delay: 0.{{ forloop.counter0 }}s;">
+
+        <div class="insight-card-img" style="background:color-mix(in srgb, var({{ activity.accent_var }}) 10%, transparent);">
+          {% if activity.image %}
+            <img src="{{ activity.image.url }}" alt="{{ activity.title }}" style="width:100%;height:100%;object-fit:cover;">
+          {% else %}
+            {% if activity.activity_type == "project" %}
+              <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:3rem;height:3rem;color:var({{ activity.accent_var }});"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            {% elif activity.activity_type == "dashboard" %}
+              <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:3rem;height:3rem;color:var({{ activity.accent_var }});"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            {% elif activity.activity_type == "certificate" %}
+              <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:3rem;height:3rem;color:var({{ activity.accent_var }});"><circle cx="12" cy="8" r="6"/><path d="M8.5 13.5 6 22l6-3 6 3-2.5-8.5"/></svg>
+            {% elif activity.activity_type == "research" %}
+              <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:3rem;height:3rem;color:var({{ activity.accent_var }});"><path d="M9 2v5.5L4 17a2 2 0 0 0 1.8 3h12.4a2 2 0 0 0 1.8-3l-5-9.5V2"/><line x1="9" y1="2" x2="15" y2="2"/></svg>
+            {% elif activity.activity_type == "recommendation" %}
+              <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:3rem;height:3rem;color:var({{ activity.accent_var }});"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            {% endif %}
+          {% endif %}
+        </div>
+
+        <div class="insight-card-body">
+          <div class="insight-card-tags">
+            <span class="tag" style="background:color-mix(in srgb, var({{ activity.accent_var }}) 18%, transparent); color:var({{ activity.accent_var }}); border:1px solid color-mix(in srgb, var({{ activity.accent_var }}) 30%, transparent);">
+              {{ activity.type_display }}
+            </span>
+          </div>
+          <div class="insight-card-title">
+            {% if activity.url %}
+              <a href="{{ activity.url }}">{{ activity.title }}</a>
+            {% else %}
+              <span>{{ activity.title }}</span>
+            {% endif %}
+          </div>
+          <div class="insight-card-meta">
+            <span class="insight-card-date">{{ activity.created_at|date:"M j, Y" }}</span>
+            {% if activity.url %}
+            <span class="insight-card-read">
+              <a href="{{ activity.url }}">
+              Read
+              </a>
+              <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+      {% empty %}
+        <p class="empty-state">No recent activity yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════ FEATURED RESEARCH ═══════════════════════════════ -->
+<section class="section" id="research" aria-label="Featured research">
+  <div class="wide-container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Academic</div>
+        <h2 class="section-title">Featured Research</h2>
+      </div>
+      <a href="{% url 'research' %}" class="view-all">
+        View All Research
+        <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="research-grid" id="researchGrid">
+      {% for research in featured_research %}
+      <article class="research-card" data-motion="reveal-liquid" data-motion-delay="0.{{ forloop.counter0 }}s">
+        <div class="research-thumb" style="border-color:color-mix(in srgb,var(--cat-research) 30%,transparent)">
+            {% if research.cover_image %}
+          <img src="{{ research.cover_image.url }}" alt="{{ research.name }}" loading="lazy" />
+          {% endif %}
+        </div>
+        <div class="research-body">
+          <div class="research-title">{{ research.title }}</div>
+          <div class="research-desc">{{ research.abstract|truncatechars:120 }}</div>
+          <div class="research-footer">
+            <span class="research-year">{{ research.publication_year }}</span>
+            <a href="{{ research.get_absolute_url }}" class="research-read">
+              <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Read Paper
+            </a>
+          </div>
+        </div>
+      </article>
+      {% empty %}
+        <p class="empty-state">No published research yet — add some in the admin.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ TECHNOLOGIES ═══════════════════════════════ -->
+<section class="section bg-alt" id="expertise" aria-label="Technologies and skills">
+  <div class="wide-container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Stack</div>
+        <h2 class="section-title">Technologies I Work With</h2>
+      </div>
+    </div>
+    <div class="tech-grid" id="techGrid">
+      {% for tool in tools %}
+      <article class="tech-item" data-motion="reveal-liquid" data-motion-delay="0.{{ forloop.counter0|stringformat:'02d' }}s">
+        <div class="tech-logo">
+          {% if tool.icon_image %}
+            <img src="{{ tool.icon_image.url }}" alt="{{ tool.name }}" loading="lazy" style="width:2rem;height:2rem;object-fit:contain;" />
+          {% else %}
+            <svg class="lm-icon lm-icon--colored" style="--icon-color:var(--cat-skills);width:2rem;height:2rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          {% endif %}
+        </div>
+        <span class="tech-name">{{ tool.name }}</span>
+        {% if tool.proficiency_level %}
+        <div class="tech-level" aria-label="Proficiency: {{ tool.proficiency_level }}/5">
+          {% for i in "12345" %}
+            <div class="tech-level-dot {% if forloop.counter <= tool.proficiency_level %}filled{% endif %}"></div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </article>
+      {% empty %}
+        <p class="empty-state">No technologies added yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ CTA CARD ═══════════════════════════════ -->
+<section class="section" id="connect" aria-label="Let's collaborate">
+  <div class="wide-container">
+    <div class="cta-card" data-motion="reveal-liquid" data-motion-delay="0.2s">
+      <div class="cta-sparkles" aria-hidden="true">
+        <span class="sparkle s1">✦</span>
+        <span class="sparkle s2">✦</span>
+        <span class="sparkle s3">✦</span>
+      </div>
+      <div class="cta-icon" aria-hidden="true">
+        <svg class="lm-icon" style="width:1.5rem;height:1.5rem;color:#fff;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <h2 style="font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:800;color:#fff;margin-bottom:12px;position:relative;z-index:1;">Let's Collaborate</h2>
+      <p style="font-size:0.85rem;color:rgba(255,255,255,0.82);line-height:1.75;margin-bottom:26px;position:relative;z-index:1;">
+        I'm open to exciting opportunities and collaborations in data analytics, backend development, public speaking, and research.
+      </p>
+      <a href="{% url 'contact' %}" class="btn cta-btn" style="position:relative;z-index:1;margin-bottom:20px;">
+        Get in Touch
+        <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <div class="cta-social" style="position:relative;z-index:1;">
+        {% for link in social_links %}
+        <a href="{{ link.href }}" class="cta-social-link" title="{{ link.get_platform_display }}" target="_blank" rel="noopener">
+          {% if link.platform == 'linkedin' %}
+            <svg class="lm-icon lm-icon--colored" style="--icon-color: #0077b5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          {% elif link.platform == 'github' %}
+            <svg class="lm-icon lm-icon--colored" style="--icon-color: currentColor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          {% elif link.platform == 'email' %}
+            <svg class="lm-icon lm-icon--colored" style="--icon-color: var(--brand-primary)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          {% elif link.platform == 'twitter' %}
+            <svg class="lm-icon lm-icon--colored" style="--icon-color: currentColor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16H20L8.267 4z"/><path d="M4 20l6.768-6.768M20 4l-6.768 6.768"/></svg>
+          {% elif link.platform == 'whatsapp' %}
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true" style="display: block; flex-shrink: 0;"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.334 4.993L2.1 21.9l5.033-1.32a9.935 9.935 0 0 0 4.88 1.29h.004c5.507 0 9.99-4.478 9.993-9.985A9.966 9.966 0 0 0 12.012 2v0zm5.952 14.34c-.26.73-1.516 1.336-2.078 1.423-.538.083-1.235.127-3.642-.87-2.906-1.205-4.773-4.253-4.918-4.448-.146-.194-1.173-1.562-1.173-2.978 0-1.417.747-2.114 1.015-2.404.229-.25.608-.363.955-.363.112 0 .223.006.32.016.347.037.535.087.69.462.195.47 1.174 2.87 1.272 3.079.1.209.167.452.033.722-.134.27-.294.49-.553.76-.237.245-.515.525-.237 1.002.585.996 1.944 2.37 3.327 3.19.742.44 1.353.643 1.77.838.416.195.962.162 1.348-.163.469-.395 1.173-1.378 1.543-1.956.242-.379.626-.43 1.05-.27.423.16 2.668 1.258 3.13 1.49.463.228.771.341.88.528.11.187.11 1.092-.15 1.822z"/></svg>
+          {% elif link.platform == 'instagram' %}
+            <svg class="lm-icon lm-icon--colored" style="--icon-color: #E1306C" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          {% elif link.platform == 'facebook' %}
+            <svg class="lm-icon lm-icon--colored" style="--icon-color: #1877F2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          {% elif link.platform == 'youtube' %}
+            <svg class="lm-icon lm-icon--colored" style="--icon-color: #FF0000" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+          {% else %}
+            {# Covers "website" plus any future platform choice - a
+               generic globe icon that needs no external file, so it
+               can never 404/500 regardless of what gets added later. #}
+            <svg class="lm-icon lm-icon--colored" style="--icon-color: currentColor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          {% endif %}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% block extra_js %}
+  <script src="{% static 'js/motion-scene.js' %}" defer></script>
+{% endblock %}
+{% endblock %}

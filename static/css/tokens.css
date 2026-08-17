@@ -1,0 +1,147 @@
+/* ============================================================
+   tokens.css — single source of truth for design tokens.
+   Every color, radius, shadow, and spacing value used anywhere
+   on the site (style.css, navbar.html, liquid-motion.css) reads
+   a token from here. Nothing else is allowed to redeclare one —
+   that's what keeps dark/light theme switching consistent
+   everywhere instead of drifting file by file.
+   ============================================================ */
+
+:root,
+[data-theme="dark"] {
+  /* --- Surfaces / backgrounds --- */
+  --bg-base: #0a0a0f;
+  --bg-alt: #0d0d15;
+  --bg-card: #12121a;
+  --bg-card-hover: #171722;
+  --bg-glass: rgba(255, 255, 255, 0.045);
+  --surface-0: #0a0a0f;
+  --surface-1: #14141d;
+  --surface-2: #1a1a25;
+
+  /* --- Text --- */
+  --text: #f4f4f7;
+  --text-muted: #9a9aa8;
+  --text-dim: #6b6b78;
+  --text-primary: #ffffff;
+
+  /* --- Borders --- */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.18);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-accent: rgba(124, 58, 237, 0.35);
+
+  /* --- Accent / brand --- */
+  --accent: #7c3aed;
+  --accent-2: #22d3ee;
+  --accent-glow: rgba(124, 58, 237, 0.18);
+  --accent-gold: #d4af37;
+  --glow-accent: rgba(124, 58, 237, 0.35);
+
+  --brand-blue: #3b5bfd;
+  --brand-cyan: #22d3ee;
+  --brand-accent: #7c3aed;
+  --brand-accent-light: #a78bfa;
+  --brand-emerald: #10b981;
+  --brand-amber: #fbbf24;
+  --brand-orange: #fb923c;
+  --brand-pink: #f472b6;
+
+  /* --- Category colors (used to tint icons/tags per content type) --- */
+  --cat-projects: var(--brand-blue);
+  --cat-dashboards: var(--brand-emerald);
+  --cat-research: var(--brand-accent);
+  --cat-skills: var(--brand-cyan);
+  --cat-certificates: var(--brand-amber);
+  --cat-case-studies: var(--brand-pink);
+  --cat-contact: var(--brand-accent-light);
+
+  /* --- Gradients / glows / shadows --- */
+  --gradient: linear-gradient(135deg, var(--brand-accent), var(--brand-blue));
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-glow: 0 8px 30px rgba(124, 58, 237, 0.16);
+
+  /* --- Ambient orb colors (hero background blobs) --- */
+  --orb-1: rgba(124, 58, 237, 0.18);
+  --orb-2: rgba(59, 91, 253, 0.14);
+  --orb-3: rgba(16, 185, 129, 0.1);
+  --orb-4: rgba(34, 211, 238, 0.12);
+
+  /* --- Shape --- */
+  --radius: 20px;
+  --radius-sm: 14px;
+  --radius-xs: 8px;
+  --radius-pill: 999px;
+
+  /* --- Layout --- */
+  --wide: 1320px;
+  --pad: 32px;
+  --nav-h: 68px;
+
+  /* --- Motion --- */
+  --tr: 0.25s ease;
+  --ease-liquid: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-theme="light"] {
+  /* --- Surfaces / backgrounds --- */
+  --bg-base: #f7f7fb;
+  --bg-alt: #eef0fa;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f3f2fb;
+  --bg-glass: rgba(255, 255, 255, 0.72);
+  --surface-0: #ffffff;
+  --surface-1: #ffffff;
+  --surface-2: #f1f0fa;
+
+  /* --- Text --- */
+  --text: #14141c;
+  --text-muted: #5b5b68;
+  --text-dim: #8a8a96;
+  --text-primary: #0a0a0f;
+
+  /* --- Borders --- */
+  --border: rgba(10, 10, 15, 0.09);
+  --border-hover: rgba(10, 10, 15, 0.18);
+  --border-subtle: rgba(10, 10, 15, 0.05);
+  --border-accent: rgba(124, 58, 237, 0.3);
+
+  /* --- Accent / brand (brand hues stay consistent across themes; only
+       their glows/backgrounds soften for a light surface) --- */
+  --accent: #7c3aed;
+  --accent-2: #0e7490;
+  --accent-glow: rgba(124, 58, 237, 0.12);
+  --accent-gold: #b8860b;
+  --glow-accent: rgba(124, 58, 237, 0.22);
+
+  --brand-blue: #3b5bfd;
+  --brand-cyan: #0891b2;
+  --brand-accent: #7c3aed;
+  --brand-accent-light: #8b5cf6;
+  --brand-emerald: #059669;
+  --brand-amber: #d97706;
+  --brand-orange: #ea580c;
+  --brand-pink: #db2777;
+
+  --cat-projects: var(--brand-blue);
+  --cat-dashboards: var(--brand-emerald);
+  --cat-research: var(--brand-accent);
+  --cat-skills: var(--brand-cyan);
+  --cat-certificates: var(--brand-amber);
+  --cat-case-studies: var(--brand-pink);
+  --cat-contact: var(--brand-accent-light);
+
+  --gradient: linear-gradient(135deg, var(--brand-accent), var(--brand-blue));
+  --shadow: 0 20px 50px rgba(20, 20, 40, 0.12);
+  --shadow-card: 0 10px 26px rgba(20, 20, 40, 0.08);
+  --shadow-glow: 0 8px 24px rgba(124, 58, 237, 0.12);
+
+  --orb-1: rgba(124, 58, 237, 0.14);
+  --orb-2: rgba(59, 91, 253, 0.1);
+  --orb-3: rgba(16, 185, 129, 0.08);
+  --orb-4: rgba(34, 211, 238, 0.1);
+
+  /* Shape / layout / motion tokens are theme-independent, inherited from
+     :root above — no need to redeclare them here. */
+}

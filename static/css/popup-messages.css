@@ -1,0 +1,101 @@
+/* ─── Django-messages popup (Section: shared toast) ──────────────────────
+   Centered, auto-dismissing notification for django.contrib.messages.
+   Used by both the public site (base.html) and Studio (studio/base.html)
+   so there is exactly one implementation to maintain.
+
+   Visible by default with no transform/opacity change — this is the
+   no-JS fallback. popup-messages.js adds `.lm-popup-enter` right away to
+   animate the entrance, then swaps to `.lm-popup-visible`, then finally
+   `.lm-popup-leaving` before removing the node. If JS never runs, the
+   message simply stays legible on screen instead of disappearing. */
+
+.lm-popup-root {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+  pointer-events: none; /* never blocks clicks on the page underneath */
+}
+
+.lm-popup-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 420px;
+  padding: 16px 22px;
+  border-radius: 14px;
+  background: rgba(13, 16, 26, 0.92);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.35s cubic-bezier(.2, .8, .2, 1), transform 0.35s cubic-bezier(.2, .8, .2, 1);
+}
+
+.lm-popup-toast.lm-popup-enter {
+  opacity: 0;
+  transform: translateY(-14px) scale(0.94);
+}
+.lm-popup-toast.lm-popup-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.lm-popup-toast.lm-popup-leaving {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.96);
+}
+
+.lm-popup-icon {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.lm-popup-success { border-color: rgba(16, 185, 129, 0.35); }
+.lm-popup-success .lm-popup-icon { background: rgba(16, 185, 129, 0.18); color: #34d399; }
+
+.lm-popup-error { border-color: rgba(248, 113, 113, 0.35); }
+.lm-popup-error .lm-popup-icon { background: rgba(248, 113, 113, 0.18); color: #f87171; }
+
+.lm-popup-warning { border-color: rgba(245, 158, 11, 0.35); }
+.lm-popup-warning .lm-popup-icon { background: rgba(245, 158, 11, 0.18); color: #fbbf24; }
+
+.lm-popup-info { border-color: rgba(99, 102, 241, 0.35); }
+.lm-popup-info .lm-popup-icon { background: rgba(99, 102, 241, 0.18); color: #818cf8; }
+
+.lm-popup-debug { border-color: rgba(148, 163, 184, 0.35); }
+.lm-popup-debug .lm-popup-icon { background: rgba(148, 163, 184, 0.18); color: #94a3b8; }
+
+@media (max-width: 480px) {
+  .lm-popup-toast {
+    max-width: calc(100vw - 48px);
+    font-size: 0.85rem;
+    padding: 14px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lm-popup-toast,
+  .lm-popup-toast.lm-popup-enter,
+  .lm-popup-toast.lm-popup-visible,
+  .lm-popup-toast.lm-popup-leaving {
+    transition: opacity 0.2s linear;
+    transform: none;
+  }
+}

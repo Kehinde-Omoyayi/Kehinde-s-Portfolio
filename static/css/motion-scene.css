@@ -1,0 +1,218 @@
+/* ============ Motion: profile picture only ============
+   Two pieces, both scoped inside .hero-profile:
+
+   1. .profile-motion-bg  — a small ambient canvas of drifting gradient
+      light behind the avatar ("background motion").
+   2. .motion-resolve / .profile-scan — the photo starts blurred and
+      desaturated, then sharpens into full colour once the page has
+      loaded, with a generated noise texture sweeping across it once
+      ("image processing" / reveal).
+
+   Reads colours from tokens.css so it themes with the rest of the site. */
+
+.hero-profile {
+  position: relative; /* needed so the canvas + scan overlay sit behind/above correctly */
+}
+
+.profile-motion-bg {
+  position: absolute;
+  inset: -15%;
+  width: 130%;
+  height: 130%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.profile-avatar {
+  position: relative;
+  z-index: 1;
+  overflow: hidden; /* keeps the scan sweep clipped to the photo's shape */
+}
+
+.profile-avatar img.motion-resolve {
+  filter: grayscale(1) blur(9px) contrast(1.25) brightness(0.75);
+  transform: scale(1.08);
+  transition: filter 1.3s var(--ease-liquid, ease), transform 1.5s var(--ease-liquid, ease);
+}
+
+.profile-avatar img.motion-resolve.is-revealed {
+  filter: grayscale(0) blur(0) contrast(1) brightness(1);
+  transform: scale(1);
+}
+
+.profile-scan {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+  opacity: 0.9;
+  transform: translateX(-100%);
+  transition: transform 1.2s var(--ease-liquid, ease) 0.2s, opacity 0.6s ease 0.9s;
+}
+
+.profile-scan.is-revealed {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-avatar img.motion-resolve,
+  .profile-scan {
+    transition: none !important;
+  }
+  .profile-motion-bg { display: none; }
+}
+
+/* Keep the floating badges above the avatar + motion effects */
+.profile-badge-floating {
+  z-index: 2;
+}
+
+/* ============ Motion: profile picture only ============
+   Two pieces, both scoped inside .hero-profile:
+
+   1. .profile-motion-bg  — a small ambient canvas of drifting gradient
+      light behind the avatar ("background motion").
+   2. .motion-resolve / .profile-scan — the photo starts blurred and
+      desaturated, then sharpens into full colour once the page has
+      loaded, with a generated noise texture sweeping across it once
+      ("image processing" / reveal).
+
+   Reads colours from tokens.css so it themes with the rest of the site. */
+
+.hero-profile {
+  position: relative; /* needed so the canvas + scan overlay sit behind/above correctly */
+}
+
+.profile-motion-bg {
+  position: absolute;
+  inset: -15%;
+  width: 130%;
+  height: 130%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.profile-avatar {
+  position: relative;
+  z-index: 1;
+  overflow: hidden; /* keeps the scan sweep clipped to the photo's shape */
+}
+
+.profile-avatar img.motion-resolve {
+  filter: grayscale(1) blur(9px) contrast(1.25) brightness(0.75);
+  transform: scale(1.08);
+  transition: filter 1.3s var(--ease-liquid, ease), transform 1.5s var(--ease-liquid, ease);
+}
+
+.profile-avatar img.motion-resolve.is-revealed {
+  filter: grayscale(0) blur(0) contrast(1) brightness(1);
+  transform: scale(1);
+}
+
+.profile-scan {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+  opacity: 0.9;
+  transform: translateX(-100%);
+  transition: transform 1.2s var(--ease-liquid, ease) 0.2s, opacity 0.6s ease 0.9s;
+}
+
+.profile-scan.is-revealed {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-avatar img.motion-resolve,
+  .profile-scan {
+    transition: none !important;
+  }
+  .profile-motion-bg { display: none; }
+}
+
+/* ============ Bigger avatar + badges orbiting in a circle, near-transparent ============ */
+
+.hero-profile {
+  --avatar-size: 340px;
+  --orbit-radius: calc(var(--avatar-size) / 2 + 54px);
+  position: relative;
+}
+
+.profile-avatar {
+  width: var(--avatar-size) !important;
+  height: var(--avatar-size) !important;
+  border-radius: 50% !important;
+}
+
+.profile-motion-bg {
+  inset: -25%;
+  width: 150%;
+  height: 150%;
+}
+
+/* Orbit container: sits centered over the avatar, badges positioned on its edge */
+.badge-orbit {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.badge-orbit-item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: rotate(var(--start-angle)) translateX(var(--orbit-radius));
+  animation: orbit-spin 34s linear infinite;
+}
+
+/* Counter-rotate so the badge text/icon always stays upright while it travels */
+.badge-orbit-item .profile-badge-floating {
+  position: absolute;
+  transform: translate(-50%, -50%) rotate(calc(-1 * var(--start-angle)));
+  animation: orbit-counter-spin 34s linear infinite;
+  pointer-events: auto;
+
+  /* almost-transparent frosted look, matching the navbar's glass style */
+  background: color-mix(in srgb, var(--surface-1, #14161d) 22%, transparent) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--border, #ffffff40) 55%, transparent) !important;
+  opacity: 0.7;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.badge-orbit-item .profile-badge-floating:hover {
+  opacity: 1;
+}
+
+/* Pause the orbit while the user is reading a badge */
+.badge-orbit:hover .badge-orbit-item,
+.badge-orbit:hover .badge-orbit-item .profile-badge-floating {
+  animation-play-state: paused;
+}
+
+@keyframes orbit-spin {
+  from { transform: rotate(var(--start-angle)) translateX(var(--orbit-radius)); }
+  to   { transform: rotate(calc(var(--start-angle) + 360deg)) translateX(var(--orbit-radius)); }
+}
+@keyframes orbit-counter-spin {
+  from { transform: translate(-50%, -50%) rotate(calc(-1 * var(--start-angle))); }
+  to   { transform: translate(-50%, -50%) rotate(calc(-1 * var(--start-angle) - 360deg)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge-orbit-item,
+  .badge-orbit-item .profile-badge-floating {
+    animation: none !important;
+  }
+}

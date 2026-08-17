@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Studio{% endblock %} — Control Panel</title>
+  <script src="{% static 'js/tailwind.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'studio/custom.css' %}">
+  <link rel="stylesheet" href="{% static 'css/popup-messages.css' %}">
+  <script>
+    tailwind.config = { theme: { extend: { colors: { surface: '#0b0f1a', accent: '#6366f1' } } } }
+  </script>
+</head>
+<body class="bg-surface text-gray-200 min-h-screen flex">
+
+  <!-- Mobile Backdrop -->
+  <div id="sidebarBackdrop" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden transition-opacity opacity-0" onclick="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside id="studioSidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-surface border-r border-white/10 p-4 flex flex-col gap-1 overflow-y-auto transform -translate-x-full transition-transform duration-300 md:relative md:translate-x-0 md:flex">
+    <div class="flex items-center justify-between mb-6 px-2">
+      <a href="{% url 'studio:home' %}" class="flex items-center gap-2">
+        <span class="h-8 w-8 rounded-full bg-accent/20 border border-accent/50 flex items-center justify-center text-accent font-bold text-sm">S</span>
+        <span class="text-white font-semibold">Studio</span>
+      </a>
+      <button class="md:hidden text-gray-400 hover:text-white" onclick="toggleSidebar()">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+
+    <nav class="space-y-5 text-sm flex-1 pb-10">
+      <!-- Overview -->
+      <div>
+        <p class="text-[11px] uppercase tracking-wide text-gray-500 px-2 mb-1">Overview</p>
+        <a href="{% url 'studio:home' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">🏠 Dashboard</a>
+        <a href="{% url 'studio:profile_edit' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">👤 Site Profile</a>
+        <a href="{% url 'studio:password_change' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">🔒 Change Password</a>
+      </div>
+
+      <!-- Showcase -->
+      <div>
+        <p class="text-[11px] uppercase tracking-wide text-gray-500 px-2 mb-1">Showcase</p>
+        <a href="{% url 'studio:project_list' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">💼 Projects</a>
+        <a href="{% url 'studio:dashboard_list' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">📈 Dashboards</a>
+        <a href="{% url 'studio:generic_list' 'certificates' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">🎓 Certificates</a>
+        <a href="{% url 'studio:generic_list' 'recommendations' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">💬 Recommendations</a>
+      </div>
+
+      <!-- Writing -->
+      <div>
+        <p class="text-[11px] uppercase tracking-wide text-gray-500 px-2 mb-1">Writing</p>
+        <a href="{% url 'studio:generic_list' 'research' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">🔬 Research / Publications</a>
+      </div>
+
+      <!-- CV & Downloads -->
+      <div>
+        <p class="text-[11px] uppercase tracking-wide text-gray-500 px-2 mb-1">CV &amp; Downloads</p>
+        <a href="{% url 'studio:generic_list' 'cv' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">📄 CV / Resume</a>
+        <a href="{% url 'studio:generic_list' 'downloads' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">📊 Datasets &amp; Reports</a>
+      </div>
+
+      <!-- Profile Extras -->
+      <div>
+        <p class="text-[11px] uppercase tracking-wide text-gray-500 px-2 mb-1">Profile Extras</p>
+        <a href="{% url 'studio:generic_list' 'open-roles' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">🎯 Open Roles</a>
+        <a href="{% url 'studio:generic_list' 'job-titles' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">🏷 Job Titles</a>
+        <a href="{% url 'studio:generic_list' 'about-stats' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">📈 About Stats</a>
+        <a href="{% url 'studio:generic_list' 'about-pillars' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">🏛 About Pillars</a>
+        <a href="{% url 'studio:generic_list' 'signature-outcomes' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">⭐ Signature Outcomes</a>
+      </div>
+
+      <!-- Site-wide -->
+      <div>
+        <p class="text-[11px] uppercase tracking-wide text-gray-500 px-2 mb-1">Site-wide</p>
+        <a href="{% url 'studio:generic_list' 'technologies' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">🧰 Technologies</a>
+        <a href="{% url 'studio:generic_list' 'connect-links' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">🔗 Connect Links</a>
+        <a href="{% url 'studio:generic_list' 'categories' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">🏷️ Categories</a>
+      </div>
+
+      <!-- Subscribers -->
+      <div>
+        <p class="text-[11px] uppercase tracking-wide text-gray-500 px-2 mb-1">Subscribers</p>
+        <a href="{% url 'studio:campaign_list' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">📣 Campaigns</a>
+        <a href="{% url 'studio:subscriber_list' %}" class="block px-2 py-1.5 rounded-lg hover:bg-white/5 hover:text-white">✉️ Subscribers</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
+    <header class="border-b border-white/10 sticky top-0 bg-surface/90 backdrop-blur z-10 shrink-0">
+      <div class="px-4 md:px-8 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <button class="md:hidden text-gray-400 hover:text-white" onclick="toggleSidebar()">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
+          <h1 class="text-white font-semibold">{% block page_title %}Studio{% endblock %}</h1>
+        </div>
+        <div class="flex items-center gap-3 text-sm">
+          <a href="{% url 'home' %}" target="_blank" class="text-gray-400 hover:text-white hidden sm:inline">View site &#8599;</a>
+          <span class="text-gray-600 hidden sm:inline">|</span>
+          <span class="text-gray-400 hidden sm:inline">{{ request.user.email }}</span>
+          <form action="{% url 'studio:logout' %}" method="post" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="text-gray-400 hover:text-white">Log out</button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <main class="p-4 md:p-8 flex-1">
+      {% include "partials/messages_popup.html" %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('studioSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      const isClosed = sidebar.classList.contains('-translate-x-full');
+      
+      if (isClosed) {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+        setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('opacity-0');
+        setTimeout(() => backdrop.classList.add('hidden'), 300);
+      }
+    }
+  </script>
+</body>
+</html>

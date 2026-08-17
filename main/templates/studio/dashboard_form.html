@@ -1,0 +1,31 @@
+{% extends "studio/base.html" %}
+{% block page_title %}{% if dashboard %}Edit Dashboard{% else %}Add Dashboard{% endif %}{% endblock %}
+{% block content %}
+
+<div class="max-w-2xl">
+  <a href="{% url 'studio:dashboard_list' %}" class="text-sm text-accent">&larr; Back to Dashboards</a>
+
+  <form method="post" enctype="multipart/form-data" class="mt-4 rounded-xl border border-white/10 bg-white/5 p-6">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="rounded-lg border border-red-500/40 bg-red-500/10 text-red-200 text-sm px-4 py-2 mb-4">{{ form.non_field_errors.0 }}</div>
+    {% endif %}
+
+    {% for field in form %}
+      {% include "studio/_field.html" %}
+    {% endfor %}
+
+    {% include "studio/_inline_formset.html" with formset=formset formset_id="metrics" title="KPI tiles" help="e.g. Label: Coverage Rate, Value: 65.7%" %}
+
+    {% include "studio/_inline_formset.html" with formset=gallery_formset formset_id="gallery" title="Gallery images" help="Extra screenshots beyond the thumbnail — e.g. Home view, Event details, a filter state." %}
+
+    <div class="flex gap-3 pt-6">
+      <button type="submit" class="bg-accent hover:bg-indigo-500 text-white text-sm px-5 py-2.5 rounded-lg">Save</button>
+      <a href="{% url 'studio:dashboard_list' %}" class="border border-white/20 hover:border-white/40 text-sm px-5 py-2.5 rounded-lg">Cancel</a>
+      {% if dashboard %}
+        <a href="{% url 'studio:dashboard_delete' dashboard.pk %}" class="text-red-400 text-sm px-5 py-2.5 ml-auto">Delete dashboard</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

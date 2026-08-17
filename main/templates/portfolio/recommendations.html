@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Recommendations — {{ site_profile.full_name|default:"Kehinde Omoyayi" }}{% endblock %}
+{% block content %}
+<section class="section" id="recommendations-page">
+  <div class="wide-container">
+    <div class="section-header" data-motion="fade-up" style="text-align: left; margin-bottom: 32px;">
+      <div>
+        <div class="section-eyebrow" style="color:var(--brand-accent);">Testimonials</div>
+        <h1 class="section-title">Recommendations</h1>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(400px, 1fr)); gap:24px;">
+      {% for r in recommendations %}
+      <article class="glass-card" style="padding:24px; display:flex; flex-direction:column; justify-content:space-between;" data-motion="reveal-liquid" data-motion-delay="0.{{ forloop.counter0 }}s">
+        <p style="color:var(--text); font-style:italic; line-height:1.6; margin-bottom:24px;">&ldquo;{{ r.message }}&rdquo;</p>
+        <div style="display:flex; align-items:center; gap:16px;">
+          {% if r.photo %}
+            <img src="{{ r.photo.url }}" alt="{{ r.name }}" style="width:48px; height:48px; border-radius:50%; object-fit:cover;">
+          {% else %}
+            <div style="width:48px; height:48px; border-radius:50%; background:var(--bg-alt); display:flex; align-items:center; justify-content:center;">
+              <svg class="lm-icon" style="color:var(--text-dim);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+          {% endif %}
+          <div style="flex-grow:1;">
+            <p style="color:var(--text); font-weight:600; font-size:0.95rem;">{{ r.name }}</p>
+            <p style="color:var(--text-muted); font-size:0.85rem;">{{ r.title_and_company }}</p>
+          </div>
+          {% if r.linkedin_url %}
+            <a href="{{ r.linkedin_url }}" target="_blank" rel="noopener" class="icon-btn" aria-label="LinkedIn" style="flex-shrink:0;">
+              <svg class="lm-icon lm-icon--colored" style="--icon-color:#0077b5;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+          {% endif %}
+        </div>
+      </article>
+      {% empty %}
+        <p class="empty-state">No recommendations yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

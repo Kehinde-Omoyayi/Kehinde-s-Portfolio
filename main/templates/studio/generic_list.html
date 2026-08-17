@@ -1,0 +1,43 @@
+{% extends "studio/base.html" %}
+{% load studio_extras %}
+{% block page_title %}{{ section.label }}{% endblock %}
+{% block content %}
+
+<div class="flex items-center justify-between mb-5 gap-4">
+  <form method="get" class="flex-1 max-w-sm">
+    <input type="text" name="q" value="{{ q }}" placeholder="Search {{ section.label|lower }}..."
+           class="w-full rounded-lg bg-[#0f1420] border border-white/15 text-gray-100 px-3 py-2 text-sm focus:outline-none focus:border-accent">
+  </form>
+  <a href="{% url 'studio:generic_create' section_key %}" class="bg-accent hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg whitespace-nowrap">
+    {{ section.icon }} Add {{ section.singular }}
+  </a>
+</div>
+
+<div class="rounded-xl border border-white/10 overflow-hidden">
+  <table class="w-full text-sm">
+    <thead class="bg-white/5 text-gray-400 text-left">
+      <tr>
+        {% for col, label in section.list_columns %}
+          <th class="px-4 py-3 font-medium">{{ label }}</th>
+        {% endfor %}
+        <th class="px-4 py-3 font-medium text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-white/5">
+      {% for obj in objects %}
+        <tr class="hover:bg-white/5">
+          {% for col, label in section.list_columns %}
+            <td class="px-4 py-3 text-gray-300">{{ obj|get_attr:col }}</td>
+          {% endfor %}
+          <td class="px-4 py-3 text-right whitespace-nowrap">
+            <a href="{% url 'studio:generic_update' section_key obj.pk %}" class="text-accent text-xs mr-3">Edit</a>
+            <a href="{% url 'studio:generic_delete' section_key obj.pk %}" class="text-red-400 text-xs">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="10" class="px-4 py-8 text-center text-gray-500">Nothing here yet — click "Add {{ section.singular }}" to create the first one.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>404 - Page Not Found</title>
+
+    {% if previous %}
+        <meta http-equiv="refresh" content="5;url={{ previous }}">
+    {% else %}
+        <meta http-equiv="refresh" content="5;url=/">
+    {% endif %}
+</head>
+<body>
+    <h1>404</h1>
+    <p>The page you're looking for doesn't exist.</p>
+
+    {% if previous %}
+    <p>Redirecting you back in 5 seconds...</p>
+    <p><a href="{{ previous }}">Go Back Now</a></p>
+    {% else %}
+    <p>Redirecting you to the homepage...</p>
+    <p><a href="/">Home</a></p>
+    {% endif %}
+
+<script>
+if (document.referrer) {
+    setTimeout(function () {
+        history.back();
+    }, 3000);
+} else {
+    setTimeout(function () {
+        window.location.href = "/";
+    }, 3000);
+}
+
+</script>
+</body>
+</html>
+

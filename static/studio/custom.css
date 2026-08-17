@@ -1,0 +1,36 @@
+/* Small extras on top of Tailwind's utility classes. Edit freely. */
+
+body {
+  background-color: #0b0f1a;
+  color: #e5e7eb;
+}
+
+.card-hover {
+  transition: transform .15s ease, border-color .15s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  border-color: #6366f1;
+}
+
+.pill {
+  display: inline-block;
+  font-size: .7rem;
+  padding: .15rem .55rem;
+  border-radius: 999px;
+  background: rgba(99,102,241,.15);
+  color: #a5b4fc;
+  border: 1px solid rgba(99,102,241,.35);
+}
+
+.subscribe-input {
+  background: #0f1420;
+  border: 1px solid #262c3d;
+  border-radius: .5rem;
+  padding: .55rem .8rem;
+  color: #e5e7eb;
+  outline: none;
+}
+.subscribe-input:focus {
+  border-color: #6366f1;
+}

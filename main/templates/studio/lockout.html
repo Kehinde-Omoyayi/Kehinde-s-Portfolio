@@ -1,0 +1,12 @@
+{% extends "studio/_auth_base.html" %}
+{% block title %}Too many attempts{% endblock %}
+{% block heading %}Too many failed attempts{% endblock %}
+{% block subheading %}Your account is temporarily locked{% endblock %}
+{% block content %}
+  <div class="rounded-lg border border-amber-500/40 bg-amber-500/10 text-amber-200 text-sm px-4 py-3">
+    For security, sign-in has been paused for a few minutes. Please try again shortly.
+  </div>
+  <p class="text-center mt-4">
+    <a href="{% url 'studio:login' %}" class="text-xs text-gray-500 hover:text-accent">Back to sign in</a>
+  </p>
+{% endblock %}

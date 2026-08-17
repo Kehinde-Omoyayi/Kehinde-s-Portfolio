@@ -1,0 +1,14 @@
+{% load static %}
+{% if messages %}
+<div class="lm-popup-root" id="lmPopupRoot" aria-live="polite">
+  {% for message in messages %}
+    <div class="lm-popup-toast lm-popup-{{ message.tags|default:'info' }}" role="status">
+      <span class="lm-popup-icon" aria-hidden="true">
+        {% if message.tags == 'success' %}✓{% elif message.tags == 'error' %}✕{% elif message.tags == 'warning' %}⚠{% else %}ℹ{% endif %}
+      </span>
+      <span class="lm-popup-text">{{ message }}</span>
+    </div>
+  {% endfor %}
+</div>
+<script src="{% static 'js/popup-messages.js' %}"></script>
+{% endif %}
