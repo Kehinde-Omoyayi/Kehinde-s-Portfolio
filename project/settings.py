@@ -7,10 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # ── Security ─────────────────────────────────────────────────────────────────
-SECRET_KEY = config(
-    'SECRET_KEY',
-    default=''
-)
+SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 
