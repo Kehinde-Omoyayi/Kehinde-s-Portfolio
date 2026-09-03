@@ -8,6 +8,11 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.templatetags.static import static
+from io import BytesIO
+
+from django.core.files.base import ContentFile
+from django.db import models
+from PIL import Image
 
 #customising the admin to function with email and password instead of the traditional username
 class custom_user_manager(BaseUserManager):
@@ -43,7 +48,7 @@ class custom_user(AbstractBaseUser,PermissionsMixin):
 
     def __str__(self):
         return f'{self.email}'
-    
+
 
 # ====================================================================
 class Category(models.Model):
@@ -72,7 +77,7 @@ class Tools(models.Model):
     class Meta:
         ordering = ['name']
 
-    
+
     def __str__(self):
         return self.name
 
@@ -105,7 +110,7 @@ class Connect_Link(models.Model):
     def __str__(self):
         return f"{self.get_platform_display()}"
 
-    @property       #for specifically  my email and whatsapp because the url is not direct 
+    @property       #for specifically  my email and whatsapp because the url is not direct
     def href(self):
         if self.platform == "email":
             # Defensive: older data may have been saved back when this
@@ -153,19 +158,19 @@ class Open_Roles(models.Model):
         return self.roles
 
 class Roles(models.Model):
-    roles = models.CharField(max_length=100, unique=True) 
+    roles = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
-        return str(self.roles) 
+        return str(self.roles)
 
 
 # ====================================================================
 class SiteProfile(models.Model):
-    full_name = models.CharField( max_length=120, default="Kehinde Omoyayi")
-    headline = models.CharField( max_length=200, default="Turning Data Into Insights. Building Solutions. Creating Impact.")
+    full_name = models.CharField(max_length=120, default="Kehinde Omoyayi")
+    headline = models.CharField(max_length=200, default="Turning Data Into Insights. Building Solutions. Creating Impact.")
     role_titles = models.ManyToManyField(Roles, blank=True)
-    short_bio = models.TextField(default="I transform raw data into actionable insights, build scalable backend systems, and develop intelligent solutions to solve real world problems." )
-    note = models.TextField(default= 'Most Analysts shows you what happened. I show you what to do next.')
+    short_bio = models.TextField(default="I transform raw data into actionable insights, build scalable backend systems, and develop intelligent solutions to solve real world problems.")
+    note = models.TextField(default="Most Analysts shows you what happened. I show you what to do next.")
     location = models.CharField(max_length=100, default="Nigeria")
     education = models.CharField(max_length=100, default="MSc. Data Science")
     experience_years = models.CharField(max_length=100, default="4+ Years Exp.")
@@ -174,16 +179,56 @@ class SiteProfile(models.Model):
     story = models.TextField(blank=True)
     availability_status = models.CharField(max_length=25, default="Available for Discussion")
     open_to_roles = models.ManyToManyField(Open_Roles, blank=True)
-    active_cv = models.ForeignKey( "CVDocument", on_delete=models.CASCADE, null=True, blank=True, related_name="+")
+    active_cv = models.ForeignKey("CVDocument", on_delete=models.CASCADE, null=True, blank=True, related_name="+")
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if self.profile_picture and hasattr(self.profile_picture, "file"):
+            try:
+                self.profile_picture.file.seek(0)
+                image = Image.open(self.profile_picture.file)
+
+                if image.mode != "RGB":
+                    image = image.convert("RGB")
+
+                # Resize while preserving the original proportions.
+                image.thumbnail(
+                    (1600, 1600),
+                    Image.Resampling.LANCZOS,
+                )
+
+                output = BytesIO()
+
+                image.save(
+                    output,
+                    format="JPEG",
+                    quality=82,
+                    optimize=True,
+                    progressive=True,
+                )
+
+                output.seek(0)
+
+                filename = (
+                    self.profile_picture.name.rsplit(".", 1)[0] + ".jpg"
+                )
+
+                self.profile_picture.save(
+                    filename,
+                    ContentFile(output.read()),
+                    save=False,
+                )
+
+            except Exception:
+                pass
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.full_name
 
-
-
 # ====================================================================
-class Currently_Focused(models.Model): 
+class Currently_Focused(models.Model):
     profile = models.ForeignKey(SiteProfile, on_delete=models.CASCADE, related_name="highlights")
     text = models.CharField(max_length=120)
     icon_svg = models.FileField(upload_to="focus_icons/", blank=True, null=True)
@@ -397,7 +442,7 @@ class Recommendation(models.Model):
         ordering = ["order", "-created_at"]
 
     def __str__(self):
-        return f"{self.name} - {self.title_and_company}" 
+        return f"{self.name} - {self.title_and_company}"
 
 
 
@@ -511,4 +556,4 @@ class PageView(models.Model):
         verbose_name_plural = 'Page Views'
 
     def __str__(self):
-        return f"{self.path} — {self.viewed_at:%Y-%m-%d %H:%M}"
+        return f"{self.path} — {self.viewed_at:%Y-%m-%d %H:%M}"
