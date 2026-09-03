@@ -1,43 +1,78 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}{{ site_profile.full_name }} — Portfolio{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script>
-    (function () {
-      try {
-        var saved = localStorage.getItem('theme');
-        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', theme);
-      } catch (e) { /* localStorage unavailable — dark default from the html tag stands */ }
-    })();
-  </script>
+    <title>{% block title %}Kehinde Omoyayi | Official Platform{% endblock %}</title>
 
-  <!-- Stylesheets: tokens first (colors/shape primitives), then base
-       styles, then the motion layer (reveal states, mobile menu,
-       search dropdown, toasts — see liquid-motion.css). -->
-  <link rel="stylesheet" href="{% static 'css/tokens.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/liquid-motion.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/popup-messages.css' %}" />
+    {% block metadescription %}
+    <meta name="description" content="Official Professional Platform of Kehinde Omoyayi, Data Analyst and Backend Developer. View interactive Power BI dashboards and research data models.">
+    {% endblock %}
+    <!-- Canonical -->
+    <link rel="canonical" href="{{ seo_url }}">
 
-  {% block extra_head %}{% endblock %}
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ seo_url }}">
+    <meta property="og:site_name" content="Kehinde Omoyayi">
+
+    {% if seo_image %}
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta property="og:image:alt" content="{{ seo_image_alt }}">
+    {% endif %}
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+
+    {% if seo_image %}
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <meta name="twitter:image:alt" content="{{ seo_image_alt }}">
+    {% endif %}
+
+    {% block extra_meta %}{% endblock %}
+
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var theme = saved || 'light';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+
+    <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/liquid-motion.css' %}">
+    <link rel="stylesheet" href="{% static 'css/popup-messages.css' %}">
+
+    {% block extra_head %}{% endblock %}
+
 </head>
+
 <body class="site-body">
 
-  {% include "navbar.html" %}
+    {% include "navbar.html" %}
 
-  {% include "partials/messages_popup.html" %}
+    {% include "partials/messages_popup.html" %}
 
-  <main id="main-content" class="site-main p-4 md:p-8">
-    {% block content %}
-    {% endblock %}
-  </main>
+    <main id="main-content" class="site-main p-4 md:p-8">
 
-  {% include "footer.html" %}
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+    {% include "footer.html" %}
 
   <div class="lm-theme-reveal" id="lmThemeReveal" aria-hidden="true"></div>
   <div class="lm-page-wipe" id="lmPageWipe" aria-hidden="true"></div>
@@ -61,7 +96,7 @@
     .site-body {
       padding-top: var(--nav-h, 72px);
     }
-    
+
     .btt-btn {
       position: fixed;
       bottom: 24px;
@@ -114,6 +149,8 @@
   </script>
 
   {% block extra_js %}{% endblock %}
+
+<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="dark" data-type="VERTICAL" data-vanity="kehinde-omoyayi" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://ng.linkedin.com/in/kehinde-omoyayi?trk=profile-badge">Kehinde Omoyayi</a></div>
 
 </body>
 </html>
