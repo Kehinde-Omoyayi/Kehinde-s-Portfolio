@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ project.name }} — Projects{% endblock %}
+{% block title %}{{ project.name }} | Projects{% endblock %}
 {% block content %}
 <section class="section" id="project-detail" style="max-width:900px; margin:0 auto;">
   <div class="wide-container" style="padding-top:20px;">
@@ -31,13 +31,13 @@
       {%if project.pdf_report %}
         <a href="{{ project.pdf_report.url }}" target="_blank" rel="noopener" class="btn btn-outline">
           <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          View PDF Report
+          View Business Report
         </a>
-      {% endif %}  
+      {% endif %}
       {% if project.pdf_report and project.allow_pdf_download %}
         <a href="{{ project.pdf_report.url }}" download data-track-url="{% url 'project_pdf_track' project.pk %}" data-download-label="{{ project.name }}" class="btn btn-outline">
           <svg class="lm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download PDF Report
+          Download Business Report
         </a>
       {% endif %}
       {% for link in project.links.all %}

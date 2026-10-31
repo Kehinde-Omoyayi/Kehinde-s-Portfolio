@@ -1,7 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Research — {{ site_profile.full_name|default:"Kehinde Omoyayi" }}{% endblock %}
+{% block title %}Research |{{ site_profile.full_name|default:"Kehinde Omoyayi" }}{% endblock %}
 {% block content %}
 
+{% block metadescription %}
+<meta name="description" content="Explore data research publications by Kehinde Omoyayi, including longitudinal analysis on public immunization trends in West Africa.">
+{% endblock %}
 <section class="section" id="research-page">
   <div class="wide-container">
     <div class="section-header" data-motion="fade-up" style="text-align: left; margin-bottom: 24px;">

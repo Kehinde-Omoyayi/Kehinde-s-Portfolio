@@ -1,6 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Projects — {{ site_profile.full_name|default:"Kehinde Omoyayi" }}{% endblock %}
+{% block title %}Projects | {{ site_profile.full_name|default:"Kehinde Omoyayi" }}{% endblock %}
 {% block content %}
+{% block metadescription %}
+<meta name="description" content="Browse data analytics and decision intelligence projects by Kehinde Omoyayi. Featuring interactive Power BI dashboards, HR workforce analytics, and retail performance models.">
+{% endblock %}
+
 <section class="section" id="projects-page">
   <div class="wide-container">
     <div class="section-header" style="text-align: left; margin-bottom: 24px;">

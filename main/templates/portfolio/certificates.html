@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Certificates — {{ site_profile.full_name|default:"Kehinde Omoyayi" }}{% endblock %}
+{% block title %}Certificates | {{ site_profile.full_name|default:"Kehinde Omoyayi" }}{% endblock %}
 {% block content %}
 <section class="section" id="certificates-page">
   <div class="wide-container">
@@ -35,7 +35,7 @@
         </div>
       </article>
       {% empty %}
-        <p class="empty-state">No certificates yet — add one in the admin.</p>
+        <p class="empty-state">No certificates yet, add one in the admin.</p>
       {% endfor %}
     </div>
   </div>
